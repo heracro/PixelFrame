@@ -3,6 +3,7 @@ package com.pixelframe.controller.ui;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -22,6 +23,9 @@ import com.pixelframe.controller.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +47,32 @@ public class MainActivity extends AppCompatActivity {
         convertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                photoView.setDrawingCacheEnabled(true);
+                Bitmap fullBitmap = Bitmap.createBitmap(photoView.getDrawingCache());
+                photoView.setDrawingCacheEnabled(false);
+                //First, let's find out the fragment currently set in image view:
+                float scale = photoView.getScale();
+                int originalWidth = fullBitmap.getWidth();
+                int originalHeight = fullBitmap.getHeight();
+                int visibleWidth = (int)(photoView.getWidth() / scale);
+                int visibleHeight = (int)(photoView.getHeight() / scale);
+                int xOffset = (int)((originalWidth - visibleWidth) / 2);
+                int yOffset = (int)((originalHeight - visibleHeight) / 2);
+                Bitmap croppedBitmap = Bitmap.createBitmap(fullBitmap, xOffset, yOffset, visibleWidth, visibleHeight);
+                File cachePath = null;
+                try {
+                    cachePath = new File(getCacheDir(), "images");
+                    cachePath.mkdirs();
+                    FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // Nadpisywanie pliku każdorazowo
+                    croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(MainActivity.this, ConvertImageActivity.class);
+                intent.putExtra("image_path", cachePath + "/image.png");
+                intent.putExtra("frame_width", photoView.getWidth());
+                intent.putExtra("frame_height", photoView.getHeight());
                 startActivity(intent);
             }
         });
