@@ -11,5 +11,5 @@ public class ImageConverter {
         this.height = height;
     }
 
-    voi
+
 }
