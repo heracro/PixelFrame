@@ -1,6 +1,7 @@
 package com.pixelframe.controller.ui;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> mGetContent;
     private PhotoView photoView;
     private TextView instructionText;
-
+    private Button convertButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +36,17 @@ public class MainActivity extends AppCompatActivity {
 
         photoView = findViewById(R.id.photo_view);
         instructionText = findViewById(R.id.instruction_text);
-        Button buttonLoadImage = findViewById(R.id.button_load);
-
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::handleImageSelection);
+        Button buttonLoadImage = findViewById(R.id.button_load);
         buttonLoadImage.setOnClickListener(v -> mGetContent.launch("image/*"));
+        convertButton = findViewById(R.id.button_convert);
+        convertButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ConvertImageActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void handleImageSelection(Uri uri) {
