@@ -1,12 +1,14 @@
-package com.pixelframe.model;
+package com.pixelframe.model.downsampling;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-public class WeightedLimitedLinearToDistance implements SamplingAlgorithm {
-    public WeightedLimitedLinearToDistance() {
-        Log.d("SamplingAlgorithm", "Selected: WeightedLimitedLinearToDistance");
+import com.pixelframe.model.SamplingAlgorithm;
+
+public class WeightedSquaredToDistance implements SamplingAlgorithm {
+    public WeightedSquaredToDistance() {
+        Log.d("SamplingAlgorithm", "Selected: WeightedSquaredToDistance");
     }
     public Color convert(Bitmap image, int width, int height) {
         float totalWeight = 0;
@@ -31,13 +33,14 @@ public class WeightedLimitedLinearToDistance implements SamplingAlgorithm {
                 red / totalWeight / 255,
                 green / totalWeight / 255,
                 blue / totalWeight / 255,
-                alpha / totalWeight / 255
+                //alpha / totalWeight / 255
+                1f
         );
     }
 
     float weight(int centerW, int centerH, int measuredW, int measuredH) {
-        float maxDist = (float)Math.sqrt(centerW * centerW);
-        float dist = (float)Math.sqrt((centerW - measuredW)*(centerW - measuredW) + (centerH - measuredH)*(centerH - measuredH));
-        return dist >= maxDist ? 0 : (1 - dist / maxDist);
+        float maxDist = (float)(centerW * centerW + centerH * centerH);
+        float dist = (float)((centerW - measuredW)*(centerW - measuredW) + (centerH - measuredH)*(centerH - measuredH));
+        return (1 - dist / maxDist);
     }
 }

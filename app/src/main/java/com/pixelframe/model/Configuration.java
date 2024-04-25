@@ -1,5 +1,11 @@
 package com.pixelframe.model;
 
+import com.pixelframe.model.downsampling.CentralPixel;
+import com.pixelframe.model.downsampling.SimpleAverage;
+import com.pixelframe.model.downsampling.WeightedLimitedLinearToDistance;
+import com.pixelframe.model.downsampling.WeightedLinearToDistance;
+import com.pixelframe.model.downsampling.WeightedSquaredToDistance;
+
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,8 +1,10 @@
-package com.pixelframe.model;
+package com.pixelframe.model.downsampling;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
+
+import com.pixelframe.model.SamplingAlgorithm;
 
 public class WeightedLinearToDistance implements SamplingAlgorithm {
     public WeightedLinearToDistance() {

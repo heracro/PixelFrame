@@ -1,7 +1,9 @@
-package com.pixelframe.model;
+package com.pixelframe.eventListeners;
 
 import android.view.View;
 import android.widget.AdapterView;
+
+import com.pixelframe.model.ImageConverter;
 
 public class PaletteItemSelectedListener implements AdapterView.OnItemSelectedListener {
     private ImageConverter imageConverter;

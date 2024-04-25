@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.photoview)
     implementation(libs.picasso)
+    implementation(libs.exifInterface)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
