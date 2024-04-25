@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.pixelframe.controller.R;
@@ -19,18 +20,14 @@ public class ConvertImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
 
-        String imagePath = getIntent().getStringExtra("image_path");
-        int frameWidth = getIntent().getIntExtra("frame_width", 0);
-        int frameHeight = getIntent().getIntExtra("frame_height", 0);
-        sourceBitmap = BitmapFactory.decodeFile(imagePath);
         sourceView = findViewById(R.id.source_image);
-        ViewGroup.LayoutParams layoutParams = sourceView.getLayoutParams();
-        layoutParams.width = frameWidth;
-        layoutParams.height = frameHeight;
-        sourceView.setLayoutParams(layoutParams);
-        Bitmap scaledBitmap = loadScaledBitmap(imagePath, frameWidth, frameHeight);
-        sourceView.setImageBitmap(scaledBitmap);
         resultView = findViewById(R.id.result_image);
+        String imagePath = getIntent().getStringExtra("imagePath");
+//        int sourceWidth = getIntent().getIntExtra("width", 0);
+//        int sourceHeight = getIntent().getIntExtra("height", 0);
+        sourceBitmap = BitmapFactory.decodeFile(imagePath);
+        if (sourceBitmap != null) sourceView.setImageBitmap(sourceBitmap);
+        else Toast.makeText(this, "Failed to load picture fragment, clear cache and try again.", Toast.LENGTH_SHORT).show();
     }
 
     public static Bitmap loadScaledBitmap(String imagePath, int targetWidth, int targetHeight) {
