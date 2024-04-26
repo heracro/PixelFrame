@@ -32,7 +32,7 @@ public class ImageConverter {
                 Bitmap fragment = Bitmap.createBitmap(
                         image, column * fragmentWidth, row * fragmentHeight,
                         fragmentWidth, fragmentHeight);
-                int color = algorithm.convert(fragment, fragmentWidth, fragmentHeight).toArgb();
+                int color = algorithm.convert(fragment, fragmentWidth, fragmentHeight);
                 result.setPixel(column, row, color);
             }
         }

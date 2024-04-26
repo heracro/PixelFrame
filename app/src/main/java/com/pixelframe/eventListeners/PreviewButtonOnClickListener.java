@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.pixelframe.model.ImageConverter;
+import com.pixelframe.model.MatrixLikeResultView;
 
 public class PreviewButtonOnClickListener implements View.OnClickListener{
     private ImageView resultView;
@@ -26,7 +27,8 @@ public class PreviewButtonOnClickListener implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        resultBitmap = imageConverter.convert(sourceBitmap, imageWidth, imageHeight);
+        MatrixLikeResultView mlrv = new MatrixLikeResultView();
+        resultBitmap = mlrv.convert(imageConverter.convert(sourceBitmap, imageWidth, imageHeight));
         resultView.setImageBitmap(resultBitmap);
     }
 }

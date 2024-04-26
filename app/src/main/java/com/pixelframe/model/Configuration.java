@@ -1,6 +1,7 @@
 package com.pixelframe.model;
 
 import com.pixelframe.model.downsampling.CentralPixel;
+import com.pixelframe.model.downsampling.Negative;
 import com.pixelframe.model.downsampling.SimpleAverage;
 import com.pixelframe.model.downsampling.WeightedLimitedLinearToDistance;
 import com.pixelframe.model.downsampling.WeightedLinearToDistance;
@@ -21,7 +22,8 @@ public class Configuration {
             "Simple average color",
             "Weighted linear pythagorean",
             "Weighted, limited linear pyth.",
-            "Weighted squared pythagorean"
+            "Weighted squared pythagorean",
+            "Central Pixel Negative"
             //"Weighted gaussian",
             //"Weighted sigmoid, 50% limit",
             //"Weighted sigmoid, 50% limited, 20% unlimited",
@@ -35,7 +37,8 @@ public class Configuration {
             SimpleAverage.class,
             WeightedLinearToDistance.class,
             WeightedLimitedLinearToDistance.class,
-            WeightedSquaredToDistance.class
+            WeightedSquaredToDistance.class,
+            Negative.class
             //WeightedGaussian.class
             //WeightedSigmoidUpperBound.class
             //WeightedSigmoidTwoBounds.class

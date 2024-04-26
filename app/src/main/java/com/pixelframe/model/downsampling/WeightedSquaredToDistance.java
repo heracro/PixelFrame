@@ -10,7 +10,7 @@ public class WeightedSquaredToDistance implements SamplingAlgorithm {
     public WeightedSquaredToDistance() {
         Log.d("SamplingAlgorithm", "Selected: WeightedSquaredToDistance");
     }
-    public Color convert(Bitmap image, int width, int height) {
+    public int convert(Bitmap image, int width, int height) {
         float totalWeight = 0;
         float red = 0;
         float green = 0;
@@ -29,12 +29,12 @@ public class WeightedSquaredToDistance implements SamplingAlgorithm {
                 }
             }
         }
-        return Color.valueOf(
-                red / totalWeight / 255,
-                green / totalWeight / 255,
-                blue / totalWeight / 255,
-                //alpha / totalWeight / 255
-                1f
+        return Color.argb(
+                alpha / totalWeight,
+                red / totalWeight,
+                green / totalWeight,
+                blue / totalWeight
+
         );
     }
 
