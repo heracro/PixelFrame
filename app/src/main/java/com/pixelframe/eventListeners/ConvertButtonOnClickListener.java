@@ -3,9 +3,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import java.io.File;
@@ -13,7 +11,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.pixelframe.controller.ui.ConvertImageActivity;
-import java.util.Arrays;
 
 public class ConvertButtonOnClickListener implements View.OnClickListener {
     private Context context;
@@ -28,7 +25,6 @@ public class ConvertButtonOnClickListener implements View.OnClickListener {
         int frameSize = context.getResources().getDisplayMetrics().widthPixels;
         Bitmap fullPicture = ((BitmapDrawable)photoView.getDrawable()).getBitmap();
         //Get visible rectangle from original picture and matrix of transformations
-        RectF visibleRect = photoView.getDisplayRect();
         Matrix imageMatrix = new Matrix();
         photoView.getDisplayMatrix(imageMatrix);
         float[] matrixValues = new float[9];
@@ -38,14 +34,11 @@ public class ConvertButtonOnClickListener implements View.OnClickListener {
         float scaleY = matrixValues[Matrix.MSCALE_Y];
         float translateX = matrixValues[Matrix.MTRANS_X];
         float translateY = matrixValues[Matrix.MTRANS_Y];
-        float invScaleX = 1 / scaleX;
-        float invScaleY = 1 / scaleY;
         // Calculate the actual position of the image's visible rectangle from the display rect
-        RectF displayRect = photoView.getDisplayRect();
-        int actualLeft = (int) ((-translateX) * invScaleX);
-        int actualTop = (int) ((-translateY) * invScaleY);
-        int actualRight = (int) ((frameSize - translateX) * invScaleX);
-        int actualBottom = (int) ((frameSize - translateY) * invScaleY);
+        int actualLeft = (int) ((-translateX) / scaleX);
+        int actualTop = (int) ((-translateY) / scaleY);
+        int actualRight = (int) ((frameSize - translateX) / scaleX);
+        int actualBottom = (int) ((frameSize - translateY) / scaleY);
         // Calculate width and height of the cropped area
         int width = actualRight - actualLeft;
         int height = actualBottom - actualTop;

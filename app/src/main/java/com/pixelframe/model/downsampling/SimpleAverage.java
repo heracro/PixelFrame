@@ -31,4 +31,5 @@ public class SimpleAverage implements SamplingAlgorithm {
                 green / count,
                 blue / count);
     }
+
 }

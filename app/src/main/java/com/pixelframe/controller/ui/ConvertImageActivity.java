@@ -11,9 +11,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
 import com.pixelframe.eventListeners.AlgorithmItemSelectedListener;
+import com.pixelframe.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.eventListeners.PreviewButtonOnClickListener;
 import com.pixelframe.eventListeners.SendButtonOnClickListener;
 import com.pixelframe.model.Configuration;
@@ -21,26 +23,22 @@ import com.pixelframe.model.ImageConverter;
 import com.pixelframe.eventListeners.PaletteItemSelectedListener;
 
 public class ConvertImageActivity extends AppCompatActivity {
-    private ImageView sourceView;
-    private Bitmap sourceBitmap;
-    private ImageView resultView;
-    private Bitmap resultBitmap;
-    private Spinner paletteSpinner;
-    private Spinner algorithmSpinner;
-    private ImageConverter imageConverter;
-    private Button previewButton;
-    private Button sendButton;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
-        sourceView = findViewById(R.id.source_image);
-        resultView = findViewById(R.id.result_image);
-        paletteSpinner = findViewById(R.id.palette_spinner);
-        algorithmSpinner = findViewById(R.id.algorithm_spinner);
-        previewButton = findViewById(R.id.button_preview);
-        sendButton = findViewById(R.id.button_send);
-        imageConverter = new ImageConverter();
+        ConstraintLayout constraintLayout = findViewById(R.id.converter_main);
+        LayoutDimensionsListener layoutDimensionsListener = new LayoutDimensionsListener(
+                constraintLayout,
+                Configuration.CONVERT_VIEW_FIRST_BLOCK_SIZE,
+                Configuration.CONVERT_VIEW_IMG_WIDTH
+        );
+        constraintLayout.getViewTreeObserver().addOnGlobalLayoutListener(layoutDimensionsListener);
+        ImageView resultView = findViewById(R.id.source_image);
+        Spinner paletteSpinner = findViewById(R.id.palette_spinner);
+        Spinner algorithmSpinner = findViewById(R.id.algorithm_spinner);
+        Button previewButton = findViewById(R.id.button_preview);
+        Button sendButton = findViewById(R.id.button_send);
+        ImageConverter imageConverter = new ImageConverter();
 
         //set spinners' content
         ArrayAdapter<String> paletteAdapter = new ArrayAdapter<>(this,
@@ -66,19 +64,19 @@ public class ConvertImageActivity extends AppCompatActivity {
         int imageWidth = getIntent().getIntExtra("width", 0);
         int imageHeight = getIntent().getIntExtra("height", 0);
         //fill in source image frame
-        sourceBitmap = BitmapFactory.decodeFile(imagePath);
-        if (sourceBitmap == null) {
+        Bitmap resultBitmap = BitmapFactory.decodeFile(imagePath);
+        if (resultBitmap == null) {
             Toast.makeText(this, "Failed to load picture fragment, clear cache and try again.", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ConvertImageActivity.this, MainActivity.class);
             startActivity(intent);
         }
-        sourceView.setImageBitmap(sourceBitmap);
+        resultView.setImageBitmap(resultBitmap);
         //set buttons and their handlers
         previewButton.setOnClickListener(
-                new PreviewButtonOnClickListener(resultView, imageConverter, sourceBitmap, resultBitmap, imageWidth, imageHeight)
+                new PreviewButtonOnClickListener(resultView, imageConverter, resultBitmap, imageWidth, imageHeight)
         );
         sendButton.setOnClickListener(
-                new SendButtonOnClickListener() //This would change during implementation of listener's class
+                new SendButtonOnClickListener(/*...*/)
         );
     }
 }

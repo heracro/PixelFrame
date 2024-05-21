@@ -7,11 +7,14 @@ import android.util.Log;
 import com.pixelframe.model.SamplingAlgorithm;
 
 public class WeightedLinearToDistance implements SamplingAlgorithm {
+    float maxDist;
     public WeightedLinearToDistance() {
         Log.d("SamplingAlgorithm", "Selected: WeightedLinearToDistance");
 
     }
     public int convert(Bitmap image, int width, int height) {
+        maxDist = (float)Math.sqrt(2) * width;
+        int center = width / 2;
         float totalWeight = 0;
         float red = 0;
         float green = 0;
@@ -20,7 +23,7 @@ public class WeightedLinearToDistance implements SamplingAlgorithm {
         for (int w = 0; w < width; ++w) {
             for (int h = 0; h < height; ++h) {
                 int pixel = image.getPixel(w, h);
-                float weight = weight(width / 2, height / 2, w, h);
+                float weight = weight(center, center, w, h);
                 if (weight > 0) {
                     red += weight * Color.red(pixel);
                     green += weight * Color.green(pixel);
@@ -39,7 +42,7 @@ public class WeightedLinearToDistance implements SamplingAlgorithm {
     }
 
     float weight(int centerW, int centerH, int measuredW, int measuredH) {
-        float maxDist = (float)Math.sqrt(centerW * centerW + centerH * centerH);
+
         float dist = (float)Math.sqrt((centerW - measuredW)*(centerW - measuredW) + (centerH - measuredH)*(centerH - measuredH));
         return (1 - dist / maxDist);
     }

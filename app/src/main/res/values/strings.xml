@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PixelFrame</string>
+    <string name="appName">PixelFrame v0.1</string>
+    <string name="mainViewTitleText">Choose an Image</string>
+    <string name="loadButtonText">Load Image</string>
+    <string name="convertButtonText">Convert Image</string>
+    <string name="convertViewTitleText">Convert image to PicoFrame bitmap</string>
+    <string name="previewButtonText">Show Preview</string>
+    <string name="transferButtonText">Transfer to PicoFrame</string>
 </resources>

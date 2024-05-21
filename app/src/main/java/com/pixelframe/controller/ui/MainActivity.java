@@ -7,36 +7,41 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.ViewTreeObserver;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.github.chrisbanes.photoview.PhotoView;
 import com.pixelframe.callbacks.PicassoUriLoaderCallback;
 import com.pixelframe.controller.R;
+import com.pixelframe.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.eventListeners.ConvertButtonOnClickListener;
+import com.pixelframe.model.Configuration;
 import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> mGetContent;
     private PhotoView photoView;
-    private TextView instructionText;
-    private Button convertButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
+        ViewTreeObserver viewTreeObserver = constraintLayout.getViewTreeObserver();
+        LayoutDimensionsListener layoutDimensionsListener = new LayoutDimensionsListener(
+                constraintLayout,
+                Configuration.MAIN_VIEW_FIRST_BLOCK_SIZE,
+                Configuration.MAIN_VIEW_IMG_WIDTH);
+        viewTreeObserver.addOnGlobalLayoutListener(layoutDimensionsListener);
         photoView = findViewById(R.id.photo_view);
-        instructionText = findViewById(R.id.instruction_text);
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::handleImageSelection);
-        Button buttonLoadImage = findViewById(R.id.button_load);
-        buttonLoadImage.setOnClickListener(v -> mGetContent.launch("image/*"));
-        convertButton = findViewById(R.id.button_convert);
-        convertButton.setOnClickListener(new ConvertButtonOnClickListener(this, photoView));
+        findViewById(R.id.buttonLoad).setOnClickListener(v -> mGetContent.launch("image/*"));
+        findViewById(R.id.buttonConvert).setOnClickListener(new ConvertButtonOnClickListener(this, photoView));
     }
 
     private void handleImageSelection(Uri uri) {
@@ -46,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("PhotoView","Error selecting image: " + e.getMessage());
             return;
         }
-        Picasso.get().load(uri).into(photoView,
-                new PicassoUriLoaderCallback(this, photoView, instructionText, uri));
+        Picasso.get().load(uri).into(photoView, new PicassoUriLoaderCallback(this, photoView, uri));
     }
 
     /**
@@ -66,9 +70,8 @@ public class MainActivity extends AppCompatActivity {
             //so we know we have a file, let's check file size.
             int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
             long fileSize = cursor.getLong(sizeIndex);
-            if (fileSize > 10 * 1024 * 1024) {
-                instructionText.setText("File is too large to process.");
-                Log.d("PhotoView", "Chosen file is to big (>10MB)");
+            if (fileSize > Configuration.IMAGE_MAX_SIZE_BYTES) {
+                Log.d("PhotoView", "Chosen file is to big (" + (fileSize / 1024 ) + ")");
                 cursor.close();
                 return false;
             }
@@ -78,13 +81,14 @@ public class MainActivity extends AppCompatActivity {
             options.inJustDecodeBounds = true;
             InputStream inputStream = contentResolver.openInputStream(uri);
             BitmapFactory.decodeStream(inputStream, null, options);
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
             int imageWidth = options.outWidth;
             int imageHeight = options.outHeight;
             long pixelCount = (long) imageWidth * imageHeight;
-            if (pixelCount > 48000000) {
-                instructionText.setText("Image is too large to process.");
-                Log.d("PhotoView", "Chosen file has too many pixels (>48M)");
+            if (pixelCount > Configuration.IMAGE_MAX_PIXELS) {
+                Log.d("PhotoView", "Chosen file has too many pixels (" + pixelCount + ")");
                 cursor.close();
                 return false;
             }
