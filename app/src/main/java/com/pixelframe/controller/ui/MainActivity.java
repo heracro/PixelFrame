@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         photoView = findViewById(R.id.photo_view);
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::handleImageSelection);
         findViewById(R.id.buttonLoad).setOnClickListener(v -> mGetContent.launch("image/*"));
-        findViewById(R.id.buttonConvert).setOnClickListener(new ConvertButtonOnClickListener(this, photoView));
+        findViewById(R.id.buttonConvert).setOnClickListener(new ConvertButtonOnClickListener(this));
     }
 
     private void handleImageSelection(Uri uri) {
@@ -97,5 +97,9 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
         return true;
+    }
+
+    public PhotoView getPhotoView() {
+        return photoView;
     }
 }

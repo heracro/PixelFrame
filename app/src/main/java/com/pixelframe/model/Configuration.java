@@ -14,8 +14,8 @@ import java.util.List;
 public class Configuration {
     public static final int MATRIX_WIDTH = 64;
     public static final int MATRIX_HEIGHT = 64;
-    //Sets how thick pixels are in relation to grid line thickness. Recommended: 2
-    public static final int GRID_VIEW_PIXEL_RATIO = 2;
+    //Sets how thick pixels are in relation to grid line thickness. Recommended: 2. No grid: 0
+    public static final int GRID_VIEW_PIXEL_RATIO = 0;
     public static final String[] PALETTE_SPINNER_CHOICES = new String[] {
         "8-bit",
         "24-bit"
@@ -55,10 +55,11 @@ public class Configuration {
 
     public static final float MAIN_VIEW_FIRST_BLOCK_SIZE = 0.5f;
     public static final float MAIN_VIEW_IMG_WIDTH = 1.0f;
-    public static final float CONVERT_VIEW_FIRST_BLOCK_SIZE = 0.2f;
+    public static final float CONVERT_VIEW_FIRST_BLOCK_SIZE = 0.1f;
     public static final float CONVERT_VIEW_IMG_WIDTH = 1.0f;
-    public static final float TRANSFER_VIEW_FIRST_BLOCK_SIZE = 0.2f;
+    public static final float TRANSFER_VIEW_FIRST_BLOCK_SIZE = 0.1f;
     public static final float TRANSFER_VIEW_IMG_WIDTH = 0.6f;
+    public static final int SLOT_BUTTON_COUNT = 4;
 
     //at 256576512 we got error "file too big"
     public static final int IMAGE_MAX_SIZE_BYTES = 256576510;

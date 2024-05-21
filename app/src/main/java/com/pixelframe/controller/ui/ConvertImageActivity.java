@@ -23,24 +23,68 @@ import com.pixelframe.model.ImageConverter;
 import com.pixelframe.eventListeners.PaletteItemSelectedListener;
 
 public class ConvertImageActivity extends AppCompatActivity {
+    private int imageWidth;
+    private int imageHeight;
+    private final ImageConverter imageConverter = new ImageConverter();
+    private ImageView resultView;
+    private Bitmap chosenFragment;
+    private Bitmap convertedFragment;
+    private Bitmap simulatedFragmentLook;
+    ConstraintLayout constraintLayout;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
-        ConstraintLayout constraintLayout = findViewById(R.id.converter_main);
+        initLayout();
+        loadImage();
+    }
+    public int getImageWidth() {
+        return imageWidth;
+    }
+    public int getImageHeight() {
+        return imageHeight;
+    }
+    public Bitmap getChosenFragment() {
+        return chosenFragment;
+    }
+    public ImageConverter getImageConverter() {
+        return imageConverter;
+    }
+    public Bitmap getConvertedFragment() {
+        return convertedFragment;
+    }
+    public void setConvertedFragment(Bitmap fragment) {
+        convertedFragment = fragment;
+    }
+    public void setSimulatedFragmentLook(Bitmap fragment) {
+        simulatedFragmentLook = fragment;
+    }
+
+    public void refreshResultView() {
+        resultView.setImageBitmap(simulatedFragmentLook);
+    }
+
+    private void initLayout() {
+        initLayoutConstraints();
+        initSpinners();
+        initTextInputs();
+        initButtons();
+    }
+
+    private void initLayoutConstraints() {
+        constraintLayout = findViewById(R.id.converter_main);
         LayoutDimensionsListener layoutDimensionsListener = new LayoutDimensionsListener(
                 constraintLayout,
                 Configuration.CONVERT_VIEW_FIRST_BLOCK_SIZE,
                 Configuration.CONVERT_VIEW_IMG_WIDTH
         );
-        constraintLayout.getViewTreeObserver().addOnGlobalLayoutListener(layoutDimensionsListener);
-        ImageView resultView = findViewById(R.id.source_image);
+        constraintLayout.getViewTreeObserver()
+                .addOnGlobalLayoutListener(layoutDimensionsListener);
+    }
+
+    private void initSpinners() {
         Spinner paletteSpinner = findViewById(R.id.palette_spinner);
         Spinner algorithmSpinner = findViewById(R.id.algorithm_spinner);
-        Button previewButton = findViewById(R.id.button_preview);
-        Button sendButton = findViewById(R.id.button_send);
-        ImageConverter imageConverter = new ImageConverter();
-
-        //set spinners' content
         ArrayAdapter<String> paletteAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
                 Configuration.PALETTE_SPINNER_CHOICES);
@@ -58,25 +102,34 @@ public class ConvertImageActivity extends AppCompatActivity {
         algorithmSpinner.setOnItemSelectedListener(
                 new AlgorithmItemSelectedListener(imageConverter)
         );
+    }
 
-        //load image and size
+    private void initButtons() {
+        Button previewButton = findViewById(R.id.button_preview);
+        Button sendButton = findViewById(R.id.button_send);
+        previewButton.setOnClickListener(
+                new PreviewButtonOnClickListener(this)
+        );
+        sendButton.setOnClickListener(
+                new SendButtonOnClickListener(this)
+        );
+    }
+
+    private void initTextInputs() {
+
+    }
+
+    private void loadImage() {
+        resultView = findViewById(R.id.source_image);
         String imagePath = getIntent().getStringExtra("imagePath");
-        int imageWidth = getIntent().getIntExtra("width", 0);
-        int imageHeight = getIntent().getIntExtra("height", 0);
-        //fill in source image frame
-        Bitmap resultBitmap = BitmapFactory.decodeFile(imagePath);
-        if (resultBitmap == null) {
+        imageWidth = getIntent().getIntExtra("width", 0);
+        imageHeight = getIntent().getIntExtra("height", 0);
+        chosenFragment = BitmapFactory.decodeFile(imagePath);
+        if (chosenFragment == null) {
             Toast.makeText(this, "Failed to load picture fragment, clear cache and try again.", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ConvertImageActivity.this, MainActivity.class);
             startActivity(intent);
         }
-        resultView.setImageBitmap(resultBitmap);
-        //set buttons and their handlers
-        previewButton.setOnClickListener(
-                new PreviewButtonOnClickListener(resultView, imageConverter, resultBitmap, imageWidth, imageHeight)
-        );
-        sendButton.setOnClickListener(
-                new SendButtonOnClickListener(/*...*/)
-        );
+        resultView.setImageBitmap(chosenFragment);
     }
 }
