@@ -21,13 +21,8 @@ public class SendButtonOnClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        jumpToTransferView();
-        //putImageToContextAndJumpToNextView();
-    }
-
-    private void jumpToTransferView() {
         Intent intent = new Intent(context, TransferActivity.class);
         intent.putExtra("convertedImage", ((ConvertImageActivity) context).getConvertedFragment());
-        context.startActivity(intent);
+        context.startActivity(intent);;
     }
 }

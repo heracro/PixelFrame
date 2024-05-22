@@ -1,12 +1,16 @@
 package com.pixelframe.controller.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -15,12 +19,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
 import com.pixelframe.eventListeners.AlgorithmItemSelectedListener;
+import com.pixelframe.eventListeners.EditTextChangeListener;
 import com.pixelframe.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.eventListeners.PreviewButtonOnClickListener;
 import com.pixelframe.eventListeners.SendButtonOnClickListener;
+import com.pixelframe.eventListeners.SliderChangeListener;
 import com.pixelframe.model.Configuration;
 import com.pixelframe.model.ImageConverter;
 import com.pixelframe.eventListeners.PaletteItemSelectedListener;
+import com.pixelframe.model.InputFilterMinMax;
 
 public class ConvertImageActivity extends AppCompatActivity {
     private int imageWidth;
@@ -30,8 +37,8 @@ public class ConvertImageActivity extends AppCompatActivity {
     private Bitmap chosenFragment;
     private Bitmap convertedFragment;
     private Bitmap simulatedFragmentLook;
-    ConstraintLayout constraintLayout;
-
+    private final Integer PARAM_1_INITIAL_VALUE = 0;
+    private final Integer PARAM_2_INITIAL_VALUE = 100;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
@@ -67,12 +74,12 @@ public class ConvertImageActivity extends AppCompatActivity {
     private void initLayout() {
         initLayoutConstraints();
         initSpinners();
-        initTextInputs();
+        initSliders();
         initButtons();
     }
 
     private void initLayoutConstraints() {
-        constraintLayout = findViewById(R.id.converter_main);
+        ConstraintLayout constraintLayout = findViewById(R.id.converter_main);
         LayoutDimensionsListener layoutDimensionsListener = new LayoutDimensionsListener(
                 constraintLayout,
                 Configuration.CONVERT_VIEW_FIRST_BLOCK_SIZE,
@@ -93,7 +100,6 @@ public class ConvertImageActivity extends AppCompatActivity {
         paletteSpinner.setOnItemSelectedListener(
                 new PaletteItemSelectedListener(imageConverter)
         );
-
         ArrayAdapter<String> algorithmAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
                 Configuration.ALGORITHM_SPINNER_CHOICES);
@@ -106,17 +112,48 @@ public class ConvertImageActivity extends AppCompatActivity {
 
     private void initButtons() {
         Button previewButton = findViewById(R.id.button_preview);
-        Button sendButton = findViewById(R.id.button_send);
         previewButton.setOnClickListener(
                 new PreviewButtonOnClickListener(this)
         );
+        Button sendButton = findViewById(R.id.button_send);
         sendButton.setOnClickListener(
                 new SendButtonOnClickListener(this)
         );
     }
 
-    private void initTextInputs() {
-
+    private void initSliders() {
+        // Parameter 1
+        SeekBar sliderParam1 = findViewById(R.id.first_param_slider);
+        sliderParam1.setMin(0);
+        sliderParam1.setMax(100);
+        sliderParam1.setProgress(PARAM_1_INITIAL_VALUE);
+        EditText editParam1 = findViewById(R.id.first_param_input);
+        editParam1.setFilters(new InputFilter[]{
+                new InputFilterMinMax(0, 100)
+        });
+        editParam1.setText(String.valueOf(PARAM_1_INITIAL_VALUE));
+        editParam1.addTextChangedListener(
+                new EditTextChangeListener(editParam1, sliderParam1)
+        );
+        sliderParam1.setOnSeekBarChangeListener(
+                new SliderChangeListener(editParam1)
+        );
+        //Parameter 2
+        SeekBar sliderParam2 = findViewById(R.id.second_param_slider);
+        sliderParam2.setMin(0);
+        sliderParam2.setMax(100);
+        sliderParam2.setProgress(PARAM_2_INITIAL_VALUE);
+        EditText editParam2 = findViewById(R.id.second_param_input);
+        editParam2.setFilters(new InputFilter[]{
+                new InputFilterMinMax(0, 100)
+        });
+        editParam2.setText(String.valueOf(PARAM_2_INITIAL_VALUE));
+        editParam2.addTextChangedListener(
+                new EditTextChangeListener(editParam2, sliderParam2)
+        );
+        sliderParam2.setOnSeekBarChangeListener(
+                new SliderChangeListener(editParam2)
+        );
     }
 
     private void loadImage() {
