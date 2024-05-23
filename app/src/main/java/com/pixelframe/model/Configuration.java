@@ -65,4 +65,8 @@ public class Configuration {
     public static final int IMAGE_MAX_SIZE_BYTES = 256576510;
     //above size minus 99% images metadata (<128kB) gives 64111359 pixels.
     public static final int IMAGE_MAX_PIXELS = 64111358;
+    public static final int BRIGHTNESS_MIN = 0;
+    public static final int BRIGHTNESS_MAX = 100;
+    public static final int TIME_MIN = 0;
+    public static final int TIME_MAX = 600;
 }

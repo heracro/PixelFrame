@@ -1,4 +1,4 @@
-package com.pixelframe.eventListeners;
+package com.pixelframe.model.eventListeners.eventListeners;
 
 import android.content.Context;
 import android.content.Intent;

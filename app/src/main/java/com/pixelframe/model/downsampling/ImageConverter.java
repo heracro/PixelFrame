@@ -1,6 +1,9 @@
-package com.pixelframe.model;
+package com.pixelframe.model.downsampling;
 
 import android.graphics.Bitmap;
+
+import com.pixelframe.model.Configuration;
+import com.pixelframe.model.SamplingAlgorithm;
 
 /**
  * Container for methods helping to convert bitmap from a bitmap to

@@ -1,13 +1,16 @@
-package com.pixelframe.eventListeners;
+package com.pixelframe.model.eventListeners.eventListeners;
 
 import android.widget.EditText;
 import android.widget.SeekBar;
 
+import com.pixelframe.model.SliderParamUser;
+
 public class SliderChangeListener implements SeekBar.OnSeekBarChangeListener {
     private EditText editText;
-    public SliderChangeListener(EditText editText) {
+    private SliderParamUser sliderParamUser;
+    public SliderChangeListener(EditText editText, SliderParamUser sliderParamUser) {
         this.editText = editText;
-
+        this.sliderParamUser = sliderParamUser;
     }
 
     @Override
@@ -22,6 +25,8 @@ public class SliderChangeListener implements SeekBar.OnSeekBarChangeListener {
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
+        if (sliderParamUser != null) {
+            sliderParamUser.transform(seekBar.getProgress());
+        }
     }
 }

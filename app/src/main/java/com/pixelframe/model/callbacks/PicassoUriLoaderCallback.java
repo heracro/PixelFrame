@@ -1,4 +1,4 @@
-package com.pixelframe.callbacks;
+package com.pixelframe.model.callbacks;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -53,6 +53,7 @@ public class PicassoUriLoaderCallback implements Callback {
             adjustScale(photoView.getDrawable());
         });
     }
+
     @Override
     public void onError(Exception e) {
         Log.d("PhotoView","Failed to load picture; onError() called");
@@ -63,12 +64,22 @@ public class PicassoUriLoaderCallback implements Callback {
             int imageWidth = drawable.getIntrinsicWidth();
             int imageHeight = drawable.getIntrinsicHeight();
             float scale = Math.max(imageWidth, imageHeight) / (float) Math.min(imageWidth, imageHeight);
+            if (scale == photoView.getMinimumScale()) {
+                return;
+            }
             float mediumScale = 1.75f * scale;
             float maximumScale = 3.0f * scale;
-            photoView.setMaximumScale(maximumScale);
-            photoView.setMediumScale(mediumScale);
-            photoView.setMinimumScale(scale);
-            photoView.setScale(scale);
+            if (photoView.getMinimumScale() < scale) {
+                photoView.setMaximumScale(maximumScale);
+                photoView.setMediumScale(mediumScale);
+                photoView.setMinimumScale(scale);
+                photoView.setScale(scale);
+            } else {
+                photoView.setMinimumScale(scale);
+                photoView.setMediumScale(mediumScale);
+                photoView.setMaximumScale(maximumScale);
+                photoView.setScale(scale);
+            }
         }
     }
 }

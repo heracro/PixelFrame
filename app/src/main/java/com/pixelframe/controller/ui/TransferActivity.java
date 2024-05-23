@@ -18,13 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.eventListeners.BTSendButtonOnClickListener;
-import com.pixelframe.eventListeners.EditTextChangeListener;
-import com.pixelframe.eventListeners.LayoutDimensionsListener;
-import com.pixelframe.eventListeners.SliderChangeListener;
-import com.pixelframe.eventListeners.SlotButtonPressListener;
+import com.pixelframe.model.eventListeners.eventListeners.BTSendButtonOnClickListener;
+import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener;
+import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
+import com.pixelframe.model.eventListeners.eventListeners.SlotButtonPressListener;
 import com.pixelframe.model.Configuration;
 import com.pixelframe.model.InputFilterMinMax;
+import com.pixelframe.model.LinearBrightnessAdjuster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,22 +37,22 @@ public class TransferActivity extends AppCompatActivity {
     private List<Button> slotButtons = new ArrayList<>();
     private int chosenSlot;
     private Bitmap image;
+    private Bitmap previewImage;
+    private ImageView imageView;
     private SeekBar timeSlider;
-    private final Integer BRIGHTNESS_INITIAL_VALUE = 100;
-    private final Integer TIME_INITIAL_VALUE = 10;
     private BTSendButtonOnClickListener sendButtonListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transfer);
-        initLayout();
         loadImage();
+        initLayout();
     }
 
     private void loadImage() {
         image = getIntent().getParcelableExtra("convertedImage");
         if (image != null) {
-            ImageView imageView = findViewById(R.id.image);
+            imageView = findViewById(R.id.image);
             imageView.setImageBitmap(image);
         }
     }
@@ -91,37 +92,40 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     private void initSliders() {
+        int brightness_initial = Configuration.BRIGHTNESS_MIN + (Configuration.BRIGHTNESS_MAX - Configuration.BRIGHTNESS_MIN)/2;
+        int time_initial = Configuration.TIME_MIN + (Configuration.TIME_MAX - Configuration.TIME_MIN) / 2;
         //brightness
         SeekBar brightnessSlider = findViewById(R.id.brightness_slider);
-        brightnessSlider.setMin(0);
-        brightnessSlider.setMax(200);
-        brightnessSlider.setProgress(BRIGHTNESS_INITIAL_VALUE);
+        brightnessSlider.setMin(Configuration.BRIGHTNESS_MIN);
+        brightnessSlider.setMax(Configuration.BRIGHTNESS_MAX);
+        brightnessSlider.setProgress(brightness_initial);
         EditText brightnessInput = findViewById(R.id.brightness_input);
         brightnessInput.setFilters(new InputFilter[]{
-                new InputFilterMinMax(0, 200)
+                new InputFilterMinMax(Configuration.BRIGHTNESS_MIN, Configuration.BRIGHTNESS_MAX)
         });
-        brightnessInput.setText(String.valueOf(BRIGHTNESS_INITIAL_VALUE));
+        brightnessInput.setText(String.valueOf(brightness_initial));
+        LinearBrightnessAdjuster lba = new LinearBrightnessAdjuster(image, this::setAndRefreshPreview);
         brightnessInput.addTextChangedListener(
-                new EditTextChangeListener(brightnessInput, brightnessSlider)
+                new EditTextChangeListener(brightnessInput, brightnessSlider, lba)
         );
         brightnessSlider.setOnSeekBarChangeListener(
-                new SliderChangeListener(brightnessInput)
+                new SliderChangeListener(brightnessInput, lba)
         );
         //time
         timeSlider = findViewById(R.id.time_slider);
-        timeSlider.setMin(0);
-        timeSlider.setMax(600);
-        timeSlider.setProgress(TIME_INITIAL_VALUE);
+        timeSlider.setMin(Configuration.TIME_MIN);
+        timeSlider.setMax(Configuration.TIME_MAX);
+        timeSlider.setProgress(time_initial);
         EditText timeEdit = findViewById(R.id.time_input);
         timeEdit.setFilters(new InputFilter[]{
-                new InputFilterMinMax(0, 600)
+                new InputFilterMinMax(Configuration.TIME_MIN, Configuration.TIME_MAX)
         });
-        timeEdit.setText(String.valueOf(TIME_INITIAL_VALUE));
+        timeEdit.setText(String.valueOf(time_initial));
         timeEdit.addTextChangedListener(
-                new EditTextChangeListener(timeEdit, timeSlider)
+                new EditTextChangeListener(timeEdit, timeSlider, null)
         );
         timeSlider.setOnSeekBarChangeListener(
-                new SliderChangeListener(timeEdit)
+                new SliderChangeListener(timeEdit, null)
         );
     }
 
@@ -175,5 +179,10 @@ public class TransferActivity extends AppCompatActivity {
 
     public float getTime() {
         return timeSlider.getProgress();
+    }
+
+    public void setAndRefreshPreview(Bitmap image) {
+        previewImage = image;
+        imageView.setImageBitmap(previewImage);
     }
 }

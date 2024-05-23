@@ -1,11 +1,9 @@
-package com.pixelframe.eventListeners;
+package com.pixelframe.model.eventListeners.eventListeners;
 
 import android.graphics.Bitmap;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.pixelframe.controller.ui.ConvertImageActivity;
-import com.pixelframe.model.ImageConverter;
 import com.pixelframe.model.MatrixLikeResultView;
 
 public class PreviewButtonOnClickListener implements View.OnClickListener{

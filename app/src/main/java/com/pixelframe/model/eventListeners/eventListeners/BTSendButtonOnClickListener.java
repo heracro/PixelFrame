@@ -1,4 +1,4 @@
-package com.pixelframe.eventListeners;
+package com.pixelframe.model.eventListeners.eventListeners;
 
 import static androidx.core.content.ContextCompat.startActivity;
 import android.Manifest;

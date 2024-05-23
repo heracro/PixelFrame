@@ -1,6 +1,5 @@
 package com.pixelframe.controller.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,15 +17,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.eventListeners.AlgorithmItemSelectedListener;
-import com.pixelframe.eventListeners.EditTextChangeListener;
-import com.pixelframe.eventListeners.LayoutDimensionsListener;
-import com.pixelframe.eventListeners.PreviewButtonOnClickListener;
-import com.pixelframe.eventListeners.SendButtonOnClickListener;
-import com.pixelframe.eventListeners.SliderChangeListener;
+import com.pixelframe.model.eventListeners.eventListeners.AlgorithmItemSelectedListener;
+import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener;
+import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.eventListeners.PreviewButtonOnClickListener;
+import com.pixelframe.model.eventListeners.eventListeners.SendButtonOnClickListener;
+import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
 import com.pixelframe.model.Configuration;
-import com.pixelframe.model.ImageConverter;
-import com.pixelframe.eventListeners.PaletteItemSelectedListener;
+import com.pixelframe.model.downsampling.ImageConverter;
+import com.pixelframe.model.eventListeners.eventListeners.PaletteItemSelectedListener;
 import com.pixelframe.model.InputFilterMinMax;
 
 public class ConvertImageActivity extends AppCompatActivity {
@@ -133,10 +132,10 @@ public class ConvertImageActivity extends AppCompatActivity {
         });
         editParam1.setText(String.valueOf(PARAM_1_INITIAL_VALUE));
         editParam1.addTextChangedListener(
-                new EditTextChangeListener(editParam1, sliderParam1)
+                new EditTextChangeListener(editParam1, sliderParam1, null)
         );
         sliderParam1.setOnSeekBarChangeListener(
-                new SliderChangeListener(editParam1)
+                new SliderChangeListener(editParam1, null)
         );
         //Parameter 2
         SeekBar sliderParam2 = findViewById(R.id.second_param_slider);
@@ -149,10 +148,10 @@ public class ConvertImageActivity extends AppCompatActivity {
         });
         editParam2.setText(String.valueOf(PARAM_2_INITIAL_VALUE));
         editParam2.addTextChangedListener(
-                new EditTextChangeListener(editParam2, sliderParam2)
+                new EditTextChangeListener(editParam2, sliderParam2, null)
         );
         sliderParam2.setOnSeekBarChangeListener(
-                new SliderChangeListener(editParam2)
+                new SliderChangeListener(editParam2, null)
         );
     }
 

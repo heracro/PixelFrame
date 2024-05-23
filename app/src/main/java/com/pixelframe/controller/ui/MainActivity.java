@@ -15,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.pixelframe.callbacks.PicassoUriLoaderCallback;
+import com.pixelframe.model.callbacks.PicassoUriLoaderCallback;
 import com.pixelframe.controller.R;
-import com.pixelframe.eventListeners.LayoutDimensionsListener;
-import com.pixelframe.eventListeners.ConvertButtonOnClickListener;
+import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.eventListeners.ConvertButtonOnClickListener;
 import com.pixelframe.model.Configuration;
 import com.squareup.picasso.Picasso;
 import java.io.InputStream;

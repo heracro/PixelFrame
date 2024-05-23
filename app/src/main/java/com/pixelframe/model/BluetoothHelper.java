@@ -18,7 +18,7 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 
-public class BluetootHelper {
+public class BluetoothHelper {
     private static int REQUEST_BLUETOOTH_PERMISSIONS = 1;
     private static String SerialPortProfile = "00001101-0000-1000-8000-00805F9B34FB";
 

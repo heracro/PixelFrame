@@ -123,13 +123,31 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.16">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <TextView
+                android:id="@+id/brightness_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brightness"
+                android:textSize="14sp"
+                android:layout_marginStart="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_top" />
+
             <SeekBar
                 android:id="@+id/brightness_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/brightness_input"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_top"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintWidth_percent="0.7"
                 android:layout_gravity="center_vertical" />
@@ -143,7 +161,7 @@
                 app:layout_constraintStart_toEndOf="@id/brightness_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_top"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- Spacer 1H -->
@@ -166,13 +184,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.16">
 
+            <!-- Guideline to limit height of the TextView -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_time_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <TextView
+                android:id="@+id/time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time [s]"
+                android:textSize="14sp"
+                android:layout_marginStart="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_time_top" />
+
             <SeekBar
                 android:id="@+id/time_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/time_input"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_time_top"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintWidth_percent="0.7"
                 android:layout_gravity="center_vertical" />
@@ -186,9 +223,11 @@
                 app:layout_constraintStart_toEndOf="@id/time_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_time_top"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <!-- Spacer 2H -->
         <View

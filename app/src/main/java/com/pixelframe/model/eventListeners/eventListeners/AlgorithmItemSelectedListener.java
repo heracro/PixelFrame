@@ -1,10 +1,10 @@
-package com.pixelframe.eventListeners;
+package com.pixelframe.model.eventListeners.eventListeners;
 
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.pixelframe.model.Configuration;
-import com.pixelframe.model.ImageConverter;
+import com.pixelframe.model.downsampling.ImageConverter;
 import com.pixelframe.model.SamplingAlgorithm;
 
 import java.lang.reflect.InvocationTargetException;
