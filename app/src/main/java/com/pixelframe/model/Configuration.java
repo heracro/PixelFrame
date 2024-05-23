@@ -15,7 +15,7 @@ public class Configuration {
     public static final int MATRIX_WIDTH = 64;
     public static final int MATRIX_HEIGHT = 64;
     //Sets how thick pixels are in relation to grid line thickness. Recommended: 2. No grid: 0
-    public static final int GRID_VIEW_PIXEL_RATIO = 0;
+    public static final int GRID_VIEW_PIXEL_RATIO = 3;
     public static final String[] PALETTE_SPINNER_CHOICES = new String[] {
         "8-bit",
         "24-bit"

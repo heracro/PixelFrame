@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
+import com.pixelframe.model.MatrixLikeResultView;
 import com.pixelframe.model.eventListeners.eventListeners.BTSendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener;
 import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
@@ -53,7 +54,7 @@ public class TransferActivity extends AppCompatActivity {
         image = getIntent().getParcelableExtra("convertedImage");
         if (image != null) {
             imageView = findViewById(R.id.image);
-            imageView.setImageBitmap(image);
+            imageView.setImageBitmap(MatrixLikeResultView.convert(image));
         }
     }
 
@@ -136,7 +137,7 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     /**
-     * Listens to events realted to granting permissions and re-calls event listener like it was
+     * Listens to events related to granting permissions and re-calls event listener like it was
      * send-button pressed by user.
      * @param requestCode The request code passed in requestPermissions(
      * android.app.Activity, String[], int)
@@ -183,6 +184,6 @@ public class TransferActivity extends AppCompatActivity {
 
     public void setAndRefreshPreview(Bitmap image) {
         previewImage = image;
-        imageView.setImageBitmap(previewImage);
+        imageView.setImageBitmap(MatrixLikeResultView.convert(previewImage));
     }
 }

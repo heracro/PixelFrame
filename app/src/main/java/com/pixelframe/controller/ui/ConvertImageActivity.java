@@ -36,6 +36,7 @@ public class ConvertImageActivity extends AppCompatActivity {
     private Bitmap chosenFragment;
     private Bitmap convertedFragment;
     private Bitmap simulatedFragmentLook;
+    private Button sendButton;
     private final Integer PARAM_1_INITIAL_VALUE = 0;
     private final Integer PARAM_2_INITIAL_VALUE = 100;
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +115,8 @@ public class ConvertImageActivity extends AppCompatActivity {
         previewButton.setOnClickListener(
                 new PreviewButtonOnClickListener(this)
         );
-        Button sendButton = findViewById(R.id.button_send);
+        sendButton = findViewById(R.id.button_send);
+        enableSendButton(false);
         sendButton.setOnClickListener(
                 new SendButtonOnClickListener(this)
         );
@@ -167,5 +169,10 @@ public class ConvertImageActivity extends AppCompatActivity {
             startActivity(intent);
         }
         resultView.setImageBitmap(chosenFragment);
+    }
+
+    public void enableSendButton(boolean enable) {
+        sendButton.setEnabled(enable);
+        sendButton.setAlpha(enable ? 1f : 0.7f);
     }
 }

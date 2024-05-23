@@ -21,5 +21,6 @@ public class PreviewButtonOnClickListener implements View.OnClickListener{
         Bitmap simulatedImage = MatrixLikeResultView.convert(convertedImage);
         activity.setSimulatedFragmentLook(simulatedImage);
         activity.refreshResultView();
+        activity.enableSendButton(true);
     }
 }

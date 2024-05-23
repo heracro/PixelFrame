@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -26,6 +27,7 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> mGetContent;
     private PhotoView photoView;
+    private Button convertButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
         photoView = findViewById(R.id.photo_view);
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(), this::handleImageSelection);
         findViewById(R.id.buttonLoad).setOnClickListener(v -> mGetContent.launch("image/*"));
-        findViewById(R.id.buttonConvert).setOnClickListener(new ConvertButtonOnClickListener(this));
+        convertButton = findViewById(R.id.buttonConvert);
+        convertButton.setEnabled(false);
+        convertButton.setAlpha(0.7f);
+        convertButton.setOnClickListener(new ConvertButtonOnClickListener(this));
     }
 
     private void handleImageSelection(Uri uri) {
@@ -52,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Picasso.get().load(uri).into(photoView, new PicassoUriLoaderCallback(this, photoView, uri));
+        convertButton.setEnabled(true);
+        convertButton.setAlpha(1f);
     }
 
     /**
@@ -102,4 +109,5 @@ public class MainActivity extends AppCompatActivity {
     public PhotoView getPhotoView() {
         return photoView;
     }
+
 }
