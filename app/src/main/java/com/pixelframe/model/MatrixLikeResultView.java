@@ -8,9 +8,11 @@ import android.util.Log;
 import com.pixelframe.model.configuration.Configuration;
 
 public class MatrixLikeResultView {
+
     private final static int ratio = Configuration.GRID_VIEW_PIXEL_RATIO;
     private final static int imageWidth = Configuration.MATRIX_WIDTH;
     private final static int imageHeight = Configuration.MATRIX_HEIGHT;
+
     public static Bitmap convert(Bitmap image) {
         if (ratio == 0) return image;
         Log.d("Konwerter", "image.getWidth() = " + image.getWidth());
@@ -40,4 +42,5 @@ public class MatrixLikeResultView {
         canvas.drawColor(Color.BLACK);
         return blackBitmap;
     }
+
 }

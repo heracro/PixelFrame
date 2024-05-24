@@ -3,12 +3,12 @@ package com.pixelframe.model.downsampling;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.pixelframe.model.SamplingAlgorithm;
-
 public class SimpleAverageLimitedArea implements SamplingAlgorithm {
+
     private static final int limit = 3;
     private int maxDist;
-    public int convert (Bitmap image, int width, int height) {
+
+    public int convert (Bitmap image, int width, int height, int param1, int param2) {
         maxDist = width / limit;
         int center = width / 2;
         int centralPixel = image.getPixel(width/2, height/2);
@@ -40,10 +40,10 @@ public class SimpleAverageLimitedArea implements SamplingAlgorithm {
         );
     }
 
-    //sqare
     int distance( int wc, int hc, int w, int h) {
         return Math.max(Math.abs(wc - w), Math.abs(hc - h));
     }
+
     int weight(int distance) {
         if (distance < maxDist) return 1;
         return 0;

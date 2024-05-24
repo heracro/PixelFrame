@@ -8,9 +8,11 @@ import com.pixelframe.model.MatrixLikeResultView;
 
 public class PreviewButtonOnClickListener implements View.OnClickListener{
     ConvertImageActivity activity;
+
     public PreviewButtonOnClickListener(ConvertImageActivity activity) {
         this.activity = activity;
     }
+
     @Override
     public void onClick(View v) {
         Bitmap convertedImage = activity.getImageConverter().convert(

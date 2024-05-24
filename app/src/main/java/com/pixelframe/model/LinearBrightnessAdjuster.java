@@ -6,8 +6,10 @@ import android.graphics.Color;
 import com.pixelframe.model.configuration.Configuration;
 
 public class LinearBrightnessAdjuster implements SliderParamUser {
+
     private final Bitmap image;
     private final BitmapPreviewConsumer bitmapConsumer;
+
     public LinearBrightnessAdjuster(Bitmap image, BitmapPreviewConsumer callback) {
         this.image = image;
         this.bitmapConsumer = callback;
@@ -47,4 +49,5 @@ public class LinearBrightnessAdjuster implements SliderParamUser {
     private int limit(int color) {
         return Math.max(0, Math.min(255, color));
     }
+
 }

@@ -7,7 +7,7 @@ import com.pixelframe.controller.ui.ConvertImageActivity;
 import com.pixelframe.model.configuration.AlgorithmDescriptor;
 import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.downsampling.ImageConverter;
-import com.pixelframe.model.SamplingAlgorithm;
+import com.pixelframe.model.downsampling.SamplingAlgorithm;
 
 import java.lang.reflect.InvocationTargetException;
 

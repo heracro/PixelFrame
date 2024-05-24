@@ -1,6 +1,5 @@
 package com.pixelframe.model.configuration;
 
-import com.pixelframe.model.SamplingAlgorithm;
 import com.pixelframe.model.downsampling.CentralPixel;
 import com.pixelframe.model.downsampling.Negative;
 import com.pixelframe.model.downsampling.SimpleAverage;
@@ -8,9 +7,6 @@ import com.pixelframe.model.downsampling.SimpleAverageLimitedArea;
 import com.pixelframe.model.downsampling.WeightedLimitedLinearToDistance;
 import com.pixelframe.model.downsampling.WeightedLinearToDistance;
 import com.pixelframe.model.downsampling.WeightedSquaredToDistance;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Configuration {
     public static final int MATRIX_WIDTH = 64;
@@ -31,24 +27,6 @@ public class Configuration {
             new AlgorithmDescriptor(WeightedSquaredToDistance.class, "Weighted squared pythagorean", 2),
             new AlgorithmDescriptor(Negative.class, "Central Pixel Negative", 0)
     };
-//    public static final String[] ALGORITHM_SPINNER_CHOICES = new String[] {
-//            "Central pixel color",
-//            "Simple average color",
-//            "Simple avg, limited area (25%)",
-//            "Weighted linear pythagorean",
-//            "Weighted, limited linear pyth.",
-//            "Weighted squared pythagorean",
-//            "Central Pixel Negative"
-//    };
-//    public static final List<Class<? extends SamplingAlgorithm>> SAMPLING_CLASSES = Arrays.asList(
-//            CentralPixel.class,
-//            SimpleAverage.class,
-//            SimpleAverageLimitedArea.class,
-//            WeightedLinearToDistance.class,
-//            WeightedLimitedLinearToDistance.class,
-//            WeightedSquaredToDistance.class,
-//            Negative.class
-//    );
 
     public static final float MAIN_VIEW_FIRST_BLOCK_SIZE = 0.5f;
     public static final float MAIN_VIEW_IMG_WIDTH = 1.0f;

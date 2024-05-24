@@ -41,32 +41,40 @@ public class ConvertImageActivity extends AppCompatActivity {
     private SeekBar sliderParam2;
     private final Integer PARAM_1_INITIAL_VALUE = 0;
     private final Integer PARAM_2_INITIAL_VALUE = 100;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
         initLayout();
         loadImage();
     }
+
     public int getImageWidth() {
         return imageWidth;
     }
+
     public int getImageHeight() {
         return imageHeight;
     }
+
     public Bitmap getChosenFragment() {
         return chosenFragment;
     }
+
     public ImageConverter getImageConverter() {
         imageConverter.setParam1(sliderParam1.getProgress());
         imageConverter.setParam2(sliderParam2.getProgress());
         return imageConverter;
     }
+
     public Bitmap getConvertedFragment() {
         return convertedFragment;
     }
+
     public void setConvertedFragment(Bitmap fragment) {
         convertedFragment = fragment;
     }
+
     public void setSimulatedFragmentLook(Bitmap fragment) {
         simulatedFragmentLook = fragment;
     }

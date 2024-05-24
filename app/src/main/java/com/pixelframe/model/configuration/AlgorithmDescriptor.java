@@ -1,6 +1,6 @@
 package com.pixelframe.model.configuration;
 
-import com.pixelframe.model.SamplingAlgorithm;
+import com.pixelframe.model.downsampling.SamplingAlgorithm;
 
 public class AlgorithmDescriptor {
     public Class<? extends SamplingAlgorithm> algorithm;

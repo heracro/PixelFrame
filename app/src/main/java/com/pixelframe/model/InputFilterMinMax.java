@@ -4,6 +4,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 
 public class InputFilterMinMax implements InputFilter {
+
     private final int min, max;
 
     public InputFilterMinMax(int min, int max) {
@@ -26,4 +27,5 @@ public class InputFilterMinMax implements InputFilter {
     private boolean isInRange(int input) {
         return input >= min && input <= max;
     }
+
 }

@@ -3,30 +3,35 @@ package com.pixelframe.model.downsampling;
 import android.graphics.Bitmap;
 
 import com.pixelframe.model.configuration.Configuration;
-import com.pixelframe.model.SamplingAlgorithm;
 
 /**
  * Container for methods helping to convert bitmap from a bitmap to
  * size specific for PicoFrame
  */
 public class ImageConverter {
+
     public static final boolean PALETTE_8BIT = true;
     public static final boolean PALETTE_24BIT = false;
     private boolean palette;
     private SamplingAlgorithm algorithm;
     private int param1;
     private int param2;
+
     public ImageConverter() {
     }
+
     public void setAlgorithm(SamplingAlgorithm algorithm) {
         this.algorithm = algorithm;
     }
+
     public void setPalette(boolean palette) {
         this.palette = palette;
     }
+
     public void setParam1(int value) {
         this.param1 = value;
     }
+
     public void setParam2(int value) {
         this.param2 = value;
     }
@@ -46,7 +51,7 @@ public class ImageConverter {
                 Bitmap fragment = Bitmap.createBitmap(image, columnStart, rowStart,
                         columnEnd - columnStart, rowEnd - rowStart);
                 int color = algorithm.convert(fragment, columnEnd - columnStart,
-                        rowEnd - rowStart);
+                        rowEnd - rowStart, param1, param2);
                 result.setPixel(c, r, color);
                 rowStart = rowEnd;
             }
@@ -55,4 +60,5 @@ public class ImageConverter {
         }
         return result;
     }
+
 }

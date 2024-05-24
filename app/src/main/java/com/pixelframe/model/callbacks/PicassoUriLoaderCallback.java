@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class PicassoUriLoaderCallback implements Callback {
+
     private final Context context;
     private final PhotoView photoView;
     private final Uri uri;

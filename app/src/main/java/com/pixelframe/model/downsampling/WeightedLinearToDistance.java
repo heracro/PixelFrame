@@ -4,15 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-import com.pixelframe.model.SamplingAlgorithm;
-
 public class WeightedLinearToDistance implements SamplingAlgorithm {
-    float maxDist;
-    public WeightedLinearToDistance() {
-        Log.d("SamplingAlgorithm", "Selected: WeightedLinearToDistance");
 
+    float maxDist;
+
+    public WeightedLinearToDistance() {
     }
-    public int convert(Bitmap image, int width, int height) {
+
+    public int convert(Bitmap image, int width, int height, int param1, int param2) {
         maxDist = (float)Math.sqrt(2) * width;
         int center = width / 2;
         float totalWeight = 0;

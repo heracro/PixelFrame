@@ -19,9 +19,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothHelper {
+
     private static int REQUEST_BLUETOOTH_PERMISSIONS = 1;
     private static String SerialPortProfile = "00001101-0000-1000-8000-00805F9B34FB";
-
     private static final UUID SerialPortProfileUUID = UUID.fromString(SerialPortProfile);
 
     public static void sendOverBT(Context context, File file) {
@@ -118,4 +118,5 @@ public class BluetoothHelper {
         }
         return null;
     }
+
 }
