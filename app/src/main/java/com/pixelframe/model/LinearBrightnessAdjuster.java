@@ -3,9 +3,7 @@ package com.pixelframe.model;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.pixelframe.model.BitmapPreviewConsumer;
-import com.pixelframe.model.Configuration;
-import com.pixelframe.model.SliderParamUser;
+import com.pixelframe.model.configuration.Configuration;
 
 public class LinearBrightnessAdjuster implements SliderParamUser {
     private final Bitmap image;
@@ -20,6 +18,7 @@ public class LinearBrightnessAdjuster implements SliderParamUser {
         Bitmap preview = adjustBrightness(image, brightness);
         bitmapConsumer.accept(preview);
     }
+
     private Bitmap adjustBrightness(Bitmap image, int brightness) {
         int width = Configuration.MATRIX_WIDTH;
         int height = Configuration.MATRIX_HEIGHT;
@@ -44,6 +43,7 @@ public class LinearBrightnessAdjuster implements SliderParamUser {
         }
         return adjustedBitmap;
     }
+
     private int limit(int color) {
         return Math.max(0, Math.min(255, color));
     }

@@ -20,7 +20,7 @@ import com.pixelframe.model.callbacks.PicassoUriLoaderCallback;
 import com.pixelframe.controller.R;
 import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.model.eventListeners.eventListeners.ConvertButtonOnClickListener;
-import com.pixelframe.model.Configuration;
+import com.pixelframe.model.configuration.Configuration;
 import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 

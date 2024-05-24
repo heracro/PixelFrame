@@ -23,7 +23,7 @@ import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListen
 import com.pixelframe.model.eventListeners.eventListeners.PreviewButtonOnClickListener;
 import com.pixelframe.model.eventListeners.eventListeners.SendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
-import com.pixelframe.model.Configuration;
+import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.downsampling.ImageConverter;
 import com.pixelframe.model.eventListeners.eventListeners.PaletteItemSelectedListener;
 import com.pixelframe.model.InputFilterMinMax;
@@ -37,6 +37,8 @@ public class ConvertImageActivity extends AppCompatActivity {
     private Bitmap convertedFragment;
     private Bitmap simulatedFragmentLook;
     private Button sendButton;
+    private SeekBar sliderParam1;
+    private SeekBar sliderParam2;
     private final Integer PARAM_1_INITIAL_VALUE = 0;
     private final Integer PARAM_2_INITIAL_VALUE = 100;
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class ConvertImageActivity extends AppCompatActivity {
         return chosenFragment;
     }
     public ImageConverter getImageConverter() {
+        imageConverter.setParam1(sliderParam1.getProgress());
+        imageConverter.setParam2(sliderParam2.getProgress());
         return imageConverter;
     }
     public Bitmap getConvertedFragment() {
@@ -100,13 +104,17 @@ public class ConvertImageActivity extends AppCompatActivity {
         paletteSpinner.setOnItemSelectedListener(
                 new PaletteItemSelectedListener(imageConverter)
         );
+        String[] algorithmNames = new String[Configuration.ALGORITHMS.length];
+        for (int i = 0; i < Configuration.ALGORITHMS.length; i++) {
+            algorithmNames[i] = Configuration.ALGORITHMS[i].name;
+        }
         ArrayAdapter<String> algorithmAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
-                Configuration.ALGORITHM_SPINNER_CHOICES);
+                algorithmNames);
         algorithmAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         algorithmSpinner.setAdapter(algorithmAdapter);
         algorithmSpinner.setOnItemSelectedListener(
-                new AlgorithmItemSelectedListener(imageConverter)
+                new AlgorithmItemSelectedListener(imageConverter, this)
         );
     }
 
@@ -124,7 +132,7 @@ public class ConvertImageActivity extends AppCompatActivity {
 
     private void initSliders() {
         // Parameter 1
-        SeekBar sliderParam1 = findViewById(R.id.first_param_slider);
+        sliderParam1 = findViewById(R.id.first_param_slider);
         sliderParam1.setMin(0);
         sliderParam1.setMax(100);
         sliderParam1.setProgress(PARAM_1_INITIAL_VALUE);
@@ -140,7 +148,7 @@ public class ConvertImageActivity extends AppCompatActivity {
                 new SliderChangeListener(editParam1, null)
         );
         //Parameter 2
-        SeekBar sliderParam2 = findViewById(R.id.second_param_slider);
+        sliderParam2 = findViewById(R.id.second_param_slider);
         sliderParam2.setMin(0);
         sliderParam2.setMax(100);
         sliderParam2.setProgress(PARAM_2_INITIAL_VALUE);
@@ -174,5 +182,23 @@ public class ConvertImageActivity extends AppCompatActivity {
     public void enableSendButton(boolean enable) {
         sendButton.setEnabled(enable);
         sendButton.setAlpha(enable ? 1f : 0.7f);
+    }
+
+    public void setParameterControlsEnabled(int parameters) {
+        if (parameters == 0) {
+            enableSlider(sliderParam1, false);
+            enableSlider(sliderParam2, false);
+        } else if (parameters == 1) {
+            enableSlider(sliderParam1, true);
+            enableSlider(sliderParam2, false);
+        } else {
+            enableSlider(sliderParam1, true);
+            enableSlider(sliderParam2, true);
+        }
+    }
+
+    private void enableSlider(SeekBar seekBar, boolean enable) {
+        seekBar.setEnabled(enable);
+        seekBar.setAlpha(enable ? 1f : 0.7f);
     }
 }

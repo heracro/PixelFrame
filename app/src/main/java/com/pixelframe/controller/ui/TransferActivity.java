@@ -24,7 +24,7 @@ import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener
 import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
 import com.pixelframe.model.eventListeners.eventListeners.SlotButtonPressListener;
-import com.pixelframe.model.Configuration;
+import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.InputFilterMinMax;
 import com.pixelframe.model.LinearBrightnessAdjuster;
 
@@ -186,4 +186,5 @@ public class TransferActivity extends AppCompatActivity {
         previewImage = image;
         imageView.setImageBitmap(MatrixLikeResultView.convert(previewImage));
     }
+
 }

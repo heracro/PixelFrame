@@ -6,8 +6,8 @@ import android.widget.SeekBar;
 import com.pixelframe.model.SliderParamUser;
 
 public class SliderChangeListener implements SeekBar.OnSeekBarChangeListener {
-    private EditText editText;
-    private SliderParamUser sliderParamUser;
+    private final EditText editText;
+    private final SliderParamUser sliderParamUser;
     public SliderChangeListener(EditText editText, SliderParamUser sliderParamUser) {
         this.editText = editText;
         this.sliderParamUser = sliderParamUser;

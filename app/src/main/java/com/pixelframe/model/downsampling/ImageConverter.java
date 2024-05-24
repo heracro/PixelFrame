@@ -2,7 +2,7 @@ package com.pixelframe.model.downsampling;
 
 import android.graphics.Bitmap;
 
-import com.pixelframe.model.Configuration;
+import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.SamplingAlgorithm;
 
 /**
@@ -14,6 +14,8 @@ public class ImageConverter {
     public static final boolean PALETTE_24BIT = false;
     private boolean palette;
     private SamplingAlgorithm algorithm;
+    private int param1;
+    private int param2;
     public ImageConverter() {
     }
     public void setAlgorithm(SamplingAlgorithm algorithm) {
@@ -21,6 +23,12 @@ public class ImageConverter {
     }
     public void setPalette(boolean palette) {
         this.palette = palette;
+    }
+    public void setParam1(int value) {
+        this.param1 = value;
+    }
+    public void setParam2(int value) {
+        this.param2 = value;
     }
 
     public Bitmap convert(Bitmap image, int width, int height) {

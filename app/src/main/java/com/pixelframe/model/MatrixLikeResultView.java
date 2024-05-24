@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.pixelframe.model.configuration.Configuration;
+
 public class MatrixLikeResultView {
     private final static int ratio = Configuration.GRID_VIEW_PIXEL_RATIO;
     private final static int imageWidth = Configuration.MATRIX_WIDTH;
