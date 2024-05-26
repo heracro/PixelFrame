@@ -12,7 +12,6 @@ public class ImageConverter {
 
     public static final boolean PALETTE_8BIT = true;
     public static final boolean PALETTE_24BIT = false;
-    private boolean palette;
     private SamplingAlgorithm algorithm;
     private int param1;
     private int param2;
@@ -22,10 +21,6 @@ public class ImageConverter {
 
     public void setAlgorithm(SamplingAlgorithm algorithm) {
         this.algorithm = algorithm;
-    }
-
-    public void setPalette(boolean palette) {
-        this.palette = palette;
     }
 
     public void setParam1(int value) {

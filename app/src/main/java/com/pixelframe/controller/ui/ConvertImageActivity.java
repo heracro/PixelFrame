@@ -27,11 +27,13 @@ import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.downsampling.ImageConverter;
 import com.pixelframe.model.eventListeners.eventListeners.PaletteItemSelectedListener;
 import com.pixelframe.model.InputFilterMinMax;
+import com.pixelframe.model.palletes.PaletteChanger;
 
 public class ConvertImageActivity extends AppCompatActivity {
     private int imageWidth;
     private int imageHeight;
-    private final ImageConverter imageConverter = new ImageConverter();
+    private ImageConverter imageConverter;
+    private PaletteChanger paletteChanger;
     private ImageView resultView;
     private Bitmap chosenFragment;
     private Bitmap convertedFragment;
@@ -45,6 +47,8 @@ public class ConvertImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
+        imageConverter = new ImageConverter();
+        paletteChanger = new PaletteChanger();
         initLayout();
         loadImage();
     }
@@ -65,6 +69,10 @@ public class ConvertImageActivity extends AppCompatActivity {
         imageConverter.setParam1(sliderParam1.getProgress());
         imageConverter.setParam2(sliderParam2.getProgress());
         return imageConverter;
+    }
+
+    public PaletteChanger getPaletteChanger() {
+        return paletteChanger;
     }
 
     public Bitmap getConvertedFragment() {
@@ -102,16 +110,22 @@ public class ConvertImageActivity extends AppCompatActivity {
     }
 
     private void initSpinners() {
+        // Palette
         Spinner paletteSpinner = findViewById(R.id.palette_spinner);
-        Spinner algorithmSpinner = findViewById(R.id.algorithm_spinner);
+        String[] paletteNames = new String[Configuration.PALETTES.length];
+        for (int i = 0; i < Configuration.PALETTES.length; ++i) {
+            paletteNames[i] = Configuration.PALETTES[i].name;
+        }
         ArrayAdapter<String> paletteAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
-                Configuration.PALETTE_SPINNER_CHOICES);
+                paletteNames);
         paletteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paletteSpinner.setAdapter(paletteAdapter);
         paletteSpinner.setOnItemSelectedListener(
-                new PaletteItemSelectedListener(imageConverter)
+                new PaletteItemSelectedListener(paletteChanger, this)
         );
+        // Algorithm
+        Spinner algorithmSpinner = findViewById(R.id.algorithm_spinner);
         String[] algorithmNames = new String[Configuration.ALGORITHMS.length];
         for (int i = 0; i < Configuration.ALGORITHMS.length; i++) {
             algorithmNames[i] = Configuration.ALGORITHMS[i].name;

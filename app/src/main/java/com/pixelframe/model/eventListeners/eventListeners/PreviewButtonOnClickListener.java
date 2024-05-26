@@ -19,6 +19,7 @@ public class PreviewButtonOnClickListener implements View.OnClickListener{
                 activity.getChosenFragment(),
                 activity.getImageWidth(),
                 activity.getImageHeight());
+        convertedImage = activity.getPaletteChanger().colorize(convertedImage);
         activity.setConvertedFragment(convertedImage);
         Bitmap simulatedImage = MatrixLikeResultView.convert(convertedImage);
         activity.setSimulatedFragmentLook(simulatedImage);
