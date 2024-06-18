@@ -1,4 +1,4 @@
-package com.pixelframe.model.eventListeners.eventListeners;
+package com.pixelframe.model.eventListeners;
 
 import android.view.View;
 

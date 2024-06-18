@@ -1,5 +1,7 @@
 package com.pixelframe.controller.ui;
 
+import static com.pixelframe.model.eventListeners.BTSendButtonOnClickListener.REQUEST_BLUETOOTH_PERMISSIONS;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,11 +21,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
 import com.pixelframe.model.MatrixLikeResultView;
-import com.pixelframe.model.eventListeners.eventListeners.BTSendButtonOnClickListener;
-import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener;
-import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
-import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
-import com.pixelframe.model.eventListeners.eventListeners.SlotButtonPressListener;
+import com.pixelframe.model.eventListeners.BTSendButtonOnClickListener;
+import com.pixelframe.model.eventListeners.EditTextChangeListener;
+import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.SliderChangeListener;
+import com.pixelframe.model.eventListeners.SlotButtonPressListener;
 import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.InputFilterMinMax;
 import com.pixelframe.model.LinearBrightnessAdjuster;
@@ -33,15 +35,12 @@ import java.util.List;
 
 public class TransferActivity extends AppCompatActivity {
 
-    private ConstraintLayout constraintLayout;
-    private LinearLayout slotButtonsContainer;
-    private List<Button> slotButtons = new ArrayList<>();
+    private final List<Button> slotButtons = new ArrayList<>();
     private int chosenSlot;
     private Bitmap image;
-    private Bitmap previewImage;
     private ImageView imageView;
     private SeekBar timeSlider;
-    private BTSendButtonOnClickListener sendButtonListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +58,7 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     private void initLayout() {
-        constraintLayout = findViewById(R.id.constraintLayout);
+        ConstraintLayout constraintLayout = findViewById(R.id.constraintLayout);
         LayoutDimensionsListener layoutDimensionsListener = new LayoutDimensionsListener(
                 constraintLayout,
                 Configuration.TRANSFER_VIEW_FIRST_BLOCK_SIZE,
@@ -73,7 +72,7 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     private void initSlotButtons() {
-        slotButtonsContainer = findViewById(R.id.slot_buttons_container);
+        LinearLayout slotButtonsContainer = findViewById(R.id.slot_buttons_container);
         Context context = slotButtonsContainer.getContext();
         int count = Configuration.SLOT_BUTTON_COUNT;
         for (int i = 1; i <= count; i++) {
@@ -102,7 +101,7 @@ public class TransferActivity extends AppCompatActivity {
         brightnessSlider.setProgress(brightness_initial);
         EditText brightnessInput = findViewById(R.id.brightness_input);
         brightnessInput.setFilters(new InputFilter[]{
-                new InputFilterMinMax(Configuration.BRIGHTNESS_MIN, Configuration.BRIGHTNESS_MAX)
+                new InputFilterMinMax(this, Configuration.BRIGHTNESS_MIN, Configuration.BRIGHTNESS_MAX)
         });
         brightnessInput.setText(String.valueOf(brightness_initial));
         LinearBrightnessAdjuster lba = new LinearBrightnessAdjuster(image, this::setAndRefreshPreview);
@@ -119,7 +118,7 @@ public class TransferActivity extends AppCompatActivity {
         timeSlider.setProgress(time_initial);
         EditText timeEdit = findViewById(R.id.time_input);
         timeEdit.setFilters(new InputFilter[]{
-                new InputFilterMinMax(Configuration.TIME_MIN, Configuration.TIME_MAX)
+                new InputFilterMinMax(this, Configuration.TIME_MIN, Configuration.TIME_MAX)
         });
         timeEdit.setText(String.valueOf(time_initial));
         timeEdit.addTextChangedListener(
@@ -132,7 +131,7 @@ public class TransferActivity extends AppCompatActivity {
 
     private void initSendButton() {
         Button sendButton = findViewById(R.id.send_button);
-        sendButtonListener = new BTSendButtonOnClickListener(this);
+        BTSendButtonOnClickListener sendButtonListener = new BTSendButtonOnClickListener(this);
         sendButton.setOnClickListener(sendButtonListener);
     }
 
@@ -150,14 +149,11 @@ public class TransferActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == BTSendButtonOnClickListener.REQUEST_BLUETOOTH_PERMISSIONS) {
+        if (requestCode == REQUEST_BLUETOOTH_PERMISSIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permissions granted, let user know and "auto-press" button again
-                Toast.makeText(this, "Bluetooth permissions granted", Toast.LENGTH_SHORT).show();
-                sendButtonListener.onPermissionsGranted();
+                Toast.makeText(this, "Permissions granted, press Transfer button again", Toast.LENGTH_SHORT).show();
             } else {
-                // Permissions not granted, just go back to transfer view and let him rot in sorrow.
-                Toast.makeText(this, "Bluetooth permissions denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permissions are required for Bluetooth operations", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -183,8 +179,7 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     public void setAndRefreshPreview(Bitmap image) {
-        previewImage = image;
-        imageView.setImageBitmap(MatrixLikeResultView.convert(previewImage));
+        imageView.setImageBitmap(MatrixLikeResultView.convert(image));
     }
 
 }

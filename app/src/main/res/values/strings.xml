@@ -8,4 +8,11 @@
     <string name="previewButtonText">Show Preview</string>
     <string name="transferButtonText">Transfer to PicoFrame</string>
     <string name="transferViewTitleText">dupa</string>
+    <string name="firstParamHintText">First choose algorithm to unlock parameter slider</string>
+    <string name="brightnessHintText">Brightness from 0 to 100</string>
+    <string name="displayTimeHintText">Display time in seconds (max. 600)</string>
+    <string name="slotText">Slot:</string>
+    <string name="brightnessNameText">Brightness</string>
+    <string name="timeNameText">Time [s]</string>
+    <string name="sendButtonText">Send</string>
 </resources>

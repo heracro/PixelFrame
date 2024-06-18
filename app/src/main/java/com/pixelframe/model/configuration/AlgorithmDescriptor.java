@@ -1,32 +1,39 @@
 package com.pixelframe.model.configuration;
 
-import com.pixelframe.model.downsampling.SamplingAlgorithm;
+import com.pixelframe.model.downsampling.AbstractDownsamplingAlgorithm;
 
 public class AlgorithmDescriptor {
-    public Class<? extends SamplingAlgorithm> algorithm;
-    public String name;
+    public final Class<? extends AbstractDownsamplingAlgorithm> algorithm;
+    public final String name;
     public int parameters;
-    public String parameterName1;
-    public String parameterName2;
+    public final String parameterName1;
+    public String parameterHint1;
+    public final String parameterName2;
+    public String parameterHint2;
 
-    public AlgorithmDescriptor(Class<? extends SamplingAlgorithm> algorithm,
-                               String name, int parameters, String parameterName1,
-                               String parameterName2) {
+    public AlgorithmDescriptor(Class<? extends AbstractDownsamplingAlgorithm> algorithm,
+                               String name,
+                               String parameterName1, String parameterHint1,
+                               String parameterName2, String parameterHint2) {
         this.algorithm = algorithm;
         this.name = name;
-        this.parameters = parameters;
+        this.parameters = 2;
         this.parameterName1 = parameterName1;
+        this.parameterHint1 = parameterHint1;
         this.parameterName2 = parameterName2;
+        this.parameterHint2 = parameterHint2;
     }
 
-    public AlgorithmDescriptor(Class<? extends SamplingAlgorithm> algorithm,
-                               String name, int parameters, String parameterName1) {
-        this(algorithm, name, parameters, parameterName1, "");
+    public AlgorithmDescriptor(Class<? extends AbstractDownsamplingAlgorithm> algorithm,
+                               String name, String parameterName1, String parameterHint1) {
+        this(algorithm, name, parameterName1, parameterHint1, "", "");
+        this.parameters = 1;
     }
 
-    public AlgorithmDescriptor(Class<? extends SamplingAlgorithm> algorithm,
-                               String name, int parameters) {
-        this(algorithm, name, parameters, "");
+    public AlgorithmDescriptor(Class<? extends AbstractDownsamplingAlgorithm> algorithm,
+                               String name) {
+        this(algorithm, name, "", "");
+        this.parameters = 0;
     }
 
 }

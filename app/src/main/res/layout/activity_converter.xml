@@ -34,7 +34,6 @@
 
         <!-- Spacer -->
         <View
-            android:id="@+id/infoSpacer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/convertViewTitleText"
@@ -58,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
+            android:contentDescription="TODO"
             android:scaleType="fitCenter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -161,8 +161,10 @@
                 android:id="@+id/first_param_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="number"
                 android:inputType="number"
                 android:textSize="14sp"
+                android:hint="@string/firstParamHintText"
                 app:layout_constraintStart_toEndOf="@id/first_param_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"
@@ -215,8 +217,10 @@
                 android:id="@+id/second_param_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:autofillHints="number"
                 android:inputType="number"
                 android:textSize="14sp"
+                android:hint="@string/firstParamHintText"
                 app:layout_constraintStart_toEndOf="@id/second_param_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"

@@ -1,11 +1,15 @@
-package com.pixelframe.model.eventListeners.eventListeners;
+package com.pixelframe.model.eventListeners;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.pixelframe.controller.R;
 import com.pixelframe.controller.ui.TransferActivity;
 
 public class SlotButtonPressListener implements View.OnClickListener {
-    TransferActivity activity;
+    final TransferActivity activity;
     private final int slotNumber;
     public SlotButtonPressListener(TransferActivity activity, int slotNumber) {
         this.activity = activity;
@@ -15,8 +19,13 @@ public class SlotButtonPressListener implements View.OnClickListener {
     public void onClick(View v) {
         Button clickedButton = (Button) v;
         for (Button b : activity.getSlotButtons()) {
+            Log.d("SlotButtonPressListener", "Button " + b.getText() +
+                    " set to " + ((b == clickedButton) ? "True" : "False"));
+            b.setActivated(b == clickedButton);
             b.setPressed(b == clickedButton);
+            b.setTextColor(Color.BLACK);
         }
+        clickedButton.setTextColor(Color.RED);
         activity.setChosenSlot(slotNumber);
     }
 }

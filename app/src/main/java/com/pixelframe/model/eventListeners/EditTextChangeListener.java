@@ -1,4 +1,4 @@
-package com.pixelframe.model.eventListeners.eventListeners;
+package com.pixelframe.model.eventListeners;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,9 +9,9 @@ import com.pixelframe.model.SliderParamUser;
 
 
 public class EditTextChangeListener implements TextWatcher {
-    private EditText editText;
-    private SeekBar seekBar;
-    SliderParamUser sliderParamUser;
+    private final EditText editText;
+    private final SeekBar seekBar;
+    final SliderParamUser sliderParamUser;
 
     public EditTextChangeListener(EditText editText, SeekBar seekBar, SliderParamUser sliderParamUser) {
         this.editText = editText;

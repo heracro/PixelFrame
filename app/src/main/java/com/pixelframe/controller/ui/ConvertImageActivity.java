@@ -17,38 +17,44 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.model.eventListeners.eventListeners.AlgorithmItemSelectedListener;
-import com.pixelframe.model.eventListeners.eventListeners.EditTextChangeListener;
-import com.pixelframe.model.eventListeners.eventListeners.LayoutDimensionsListener;
-import com.pixelframe.model.eventListeners.eventListeners.PreviewButtonOnClickListener;
-import com.pixelframe.model.eventListeners.eventListeners.SendButtonOnClickListener;
-import com.pixelframe.model.eventListeners.eventListeners.SliderChangeListener;
+import com.pixelframe.model.downsampling.AbstractDownsamplingAlgorithm;
+import com.pixelframe.model.downsampling.CentralPixel;
+import com.pixelframe.model.eventListeners.AlgorithmItemSelectedListener;
+import com.pixelframe.model.eventListeners.EditTextChangeListener;
+import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.PreviewButtonOnClickListener;
+import com.pixelframe.model.eventListeners.SendButtonOnClickListener;
+import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.configuration.Configuration;
-import com.pixelframe.model.downsampling.ImageConverter;
-import com.pixelframe.model.eventListeners.eventListeners.PaletteItemSelectedListener;
+import com.pixelframe.model.eventListeners.PaletteItemSelectedListener;
 import com.pixelframe.model.InputFilterMinMax;
-import com.pixelframe.model.palletes.PaletteChanger;
+import com.pixelframe.model.palletes.AbstractPalette;
+import com.pixelframe.model.palletes.SourcePalette;
 
 public class ConvertImageActivity extends AppCompatActivity {
     private int imageWidth;
     private int imageHeight;
-    private ImageConverter imageConverter;
-    private PaletteChanger paletteChanger;
+    private Class<? extends AbstractDownsamplingAlgorithm> downsampler;
+    private Class<? extends AbstractPalette> palette;
     private ImageView resultView;
     private Bitmap chosenFragment;
     private Bitmap convertedFragment;
     private Bitmap simulatedFragmentLook;
     private Button sendButton;
+    private int algorithmPosition;
     private SeekBar sliderParam1;
+    private EditText editParam1;
     private SeekBar sliderParam2;
-    private final Integer PARAM_1_INITIAL_VALUE = 0;
-    private final Integer PARAM_2_INITIAL_VALUE = 100;
+    private EditText editParam2;
+    private String param1Hint;
+    private String param2Hint;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_converter);
-        imageConverter = new ImageConverter();
-        paletteChanger = new PaletteChanger();
+        downsampler = CentralPixel.class;
+        palette = SourcePalette.class;
         initLayout();
         loadImage();
     }
@@ -65,14 +71,28 @@ public class ConvertImageActivity extends AppCompatActivity {
         return chosenFragment;
     }
 
-    public ImageConverter getImageConverter() {
-        imageConverter.setParam1(sliderParam1.getProgress());
-        imageConverter.setParam2(sliderParam2.getProgress());
-        return imageConverter;
+    public Class<? extends AbstractDownsamplingAlgorithm> getDownsamplerClass() {
+        return downsampler;
     }
 
-    public PaletteChanger getPaletteChanger() {
-        return paletteChanger;
+    public void setDownsamplerClass(Class<? extends AbstractDownsamplingAlgorithm> downsampler) {
+        this.downsampler = downsampler;
+    }
+
+    public Class<? extends AbstractPalette> getPaletteClass() {
+        return palette;
+    }
+
+    public void setPaletteClass(Class<? extends AbstractPalette> palette) {
+        this.palette = palette;
+    }
+
+    public int getParam1Value() {
+        return sliderParam1.getProgress();
+    }
+
+    public int getParam2Value() {
+        return sliderParam2.getProgress();
     }
 
     public Bitmap getConvertedFragment() {
@@ -122,7 +142,7 @@ public class ConvertImageActivity extends AppCompatActivity {
         paletteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         paletteSpinner.setAdapter(paletteAdapter);
         paletteSpinner.setOnItemSelectedListener(
-                new PaletteItemSelectedListener(paletteChanger, this)
+                new PaletteItemSelectedListener(this)
         );
         // Algorithm
         Spinner algorithmSpinner = findViewById(R.id.algorithm_spinner);
@@ -136,7 +156,7 @@ public class ConvertImageActivity extends AppCompatActivity {
         algorithmAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         algorithmSpinner.setAdapter(algorithmAdapter);
         algorithmSpinner.setOnItemSelectedListener(
-                new AlgorithmItemSelectedListener(imageConverter, this)
+                new AlgorithmItemSelectedListener(this)
         );
     }
 
@@ -152,17 +172,19 @@ public class ConvertImageActivity extends AppCompatActivity {
         );
     }
 
-    private void initSliders() {
+    public void initSliders() {
         // Parameter 1
         sliderParam1 = findViewById(R.id.first_param_slider);
         sliderParam1.setMin(0);
         sliderParam1.setMax(100);
+        Integer PARAM_1_INITIAL_VALUE = 50;
         sliderParam1.setProgress(PARAM_1_INITIAL_VALUE);
-        EditText editParam1 = findViewById(R.id.first_param_input);
+        editParam1 = findViewById(R.id.first_param_input);
         editParam1.setFilters(new InputFilter[]{
-                new InputFilterMinMax(0, 100)
+                new InputFilterMinMax(this, 0, 100)
         });
         editParam1.setText(String.valueOf(PARAM_1_INITIAL_VALUE));
+        editParam1.setHint(param1Hint);
         editParam1.addTextChangedListener(
                 new EditTextChangeListener(editParam1, sliderParam1, null)
         );
@@ -173,12 +195,14 @@ public class ConvertImageActivity extends AppCompatActivity {
         sliderParam2 = findViewById(R.id.second_param_slider);
         sliderParam2.setMin(0);
         sliderParam2.setMax(100);
+        Integer PARAM_2_INITIAL_VALUE = 50;
         sliderParam2.setProgress(PARAM_2_INITIAL_VALUE);
-        EditText editParam2 = findViewById(R.id.second_param_input);
+        editParam2 = findViewById(R.id.second_param_input);
         editParam2.setFilters(new InputFilter[]{
-                new InputFilterMinMax(0, 100)
+                new InputFilterMinMax(this, 0, 100)
         });
         editParam2.setText(String.valueOf(PARAM_2_INITIAL_VALUE));
+        editParam2.setHint(param2Hint);
         editParam2.addTextChangedListener(
                 new EditTextChangeListener(editParam2, sliderParam2, null)
         );
@@ -206,21 +230,41 @@ public class ConvertImageActivity extends AppCompatActivity {
         sendButton.setAlpha(enable ? 1f : 0.7f);
     }
 
-    public void setParameterControlsEnabled(int parameters) {
-        if (parameters == 0) {
+    public void setParameterControlsEnabled(int count) {
+        if (count == 0) {
             enableSlider(sliderParam1, false);
             enableSlider(sliderParam2, false);
-        } else if (parameters == 1) {
+            enableEditText(editParam1, false);
+            enableEditText(editParam2, false);
+        } else if (count == 1) {
             enableSlider(sliderParam1, true);
             enableSlider(sliderParam2, false);
+            enableEditText(editParam1, true);
+            enableEditText(editParam2, false);
         } else {
             enableSlider(sliderParam1, true);
             enableSlider(sliderParam2, true);
+            enableEditText(editParam1, true);
+            enableEditText(editParam2, true);
         }
     }
 
     private void enableSlider(SeekBar seekBar, boolean enable) {
         seekBar.setEnabled(enable);
         seekBar.setAlpha(enable ? 1f : 0.7f);
+    }
+
+    private void enableEditText(EditText editText, boolean enable) {
+        editText.setEnabled(enable);
+        editText.setAlpha(enable ? 1f : 0.7f);
+    }
+
+    public void setAlgorithmPosition(int position) {
+        this.algorithmPosition = position;
+    }
+
+    public void updateParameterHints(int position) {
+        param1Hint = Configuration.ALGORITHMS[position].parameterHint1;
+        param2Hint = Configuration.ALGORITHMS[position].parameterHint2;
     }
 }

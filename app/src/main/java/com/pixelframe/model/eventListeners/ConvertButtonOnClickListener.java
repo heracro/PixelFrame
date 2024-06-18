@@ -1,4 +1,4 @@
-package com.pixelframe.model.eventListeners.eventListeners;
+package com.pixelframe.model.eventListeners;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -70,7 +70,6 @@ public class ConvertButtonOnClickListener implements View.OnClickListener {
             stream.close();
             return cachePath + "/image.png";
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }

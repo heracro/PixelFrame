@@ -3,12 +3,10 @@ package com.pixelframe.model.downsampling;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-public class CentralPixel implements SamplingAlgorithm {
+public class CentralPixel extends AbstractDownsamplingAlgorithm {
 
-    public CentralPixel() {
+    int convertFragment(Bitmap image) {
+        return image.getPixel(image.getWidth()/2, image.getHeight()/2);
     }
 
-    public int convert(Bitmap image, int width, int height, int param1, int param2) {
-        return image.getPixel(width/2, height/2);
-    }
 }

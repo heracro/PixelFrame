@@ -1,15 +1,19 @@
 package com.pixelframe.model;
 
+import android.content.Context;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.widget.Toast;
 
 public class InputFilterMinMax implements InputFilter {
 
+    private final Context context;
     private final int min, max;
 
-    public InputFilterMinMax(int min, int max) {
+    public InputFilterMinMax(Context context, int min, int max) {
         this.min = min;
         this.max = max;
+        this.context = context;
     }
 
     @Override
@@ -20,6 +24,7 @@ public class InputFilterMinMax implements InputFilter {
             if (isInRange(input))
                 return null;
         } catch (NumberFormatException e) {
+            Toast.makeText(context, "Invalid input, please enter a number between " + min + " and " + max, Toast.LENGTH_SHORT).show();
         }
         return "";
     }

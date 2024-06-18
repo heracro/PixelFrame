@@ -1,10 +1,13 @@
 package com.pixelframe.model.palletes;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
-public class P9Bit333 implements Pallete {
-    @Override
-    public int colorize(int pixel) {
+import com.pixelframe.model.configuration.Configuration;
+
+public class P9Bit333 extends AbstractPalette {
+
+    public int changePixelColor(int pixel) {
         return Color.argb(
                 Color.alpha(pixel),
                 Color.red(pixel) & 0xE0,

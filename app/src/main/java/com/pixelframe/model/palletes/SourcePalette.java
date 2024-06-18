@@ -1,8 +1,10 @@
 package com.pixelframe.model.palletes;
 
-public class SourcePalette implements Pallete {
-    @Override
-    public int colorize(int pixel) {
+import android.graphics.Bitmap;
+
+public class SourcePalette extends AbstractPalette {
+
+    public int changePixelColor(int pixel) {
         return pixel;
     }
 }

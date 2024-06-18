@@ -4,23 +4,23 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 
-public class WeightedLinearToDistance implements SamplingAlgorithm {
+public class WeightedLinearToDistance extends AbstractDownsamplingAlgorithm {
 
     float maxDist;
 
     public WeightedLinearToDistance() {
     }
 
-    public int convert(Bitmap image, int width, int height, int param1, int param2) {
-        maxDist = (float)Math.sqrt(2) * width;
-        int center = width / 2;
+    int convertFragment(Bitmap image) {
+        maxDist = (float)Math.sqrt(2) * image.getWidth();
+        int center = image.getHeight() / 2;
         float totalWeight = 0;
         float red = 0;
         float green = 0;
         float blue = 0;
         float alpha = 0;
-        for (int w = 0; w < width; ++w) {
-            for (int h = 0; h < height; ++h) {
+        for (int w = 0; w < image.getWidth(); ++w) {
+            for (int h = 0; h < image.getHeight(); ++h) {
                 int pixel = image.getPixel(w, h);
                 float weight = weight(center, center, w, h);
                 if (weight > 0) {

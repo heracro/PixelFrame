@@ -1,11 +1,13 @@
 package com.pixelframe.model.palletes;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
-public class P8Bit332 implements Pallete {
+import com.pixelframe.model.configuration.Configuration;
 
-    @Override
-    public int colorize(int pixel) {
+public class P8Bit332 extends AbstractPalette {
+
+    public int changePixelColor(int pixel) {
         return Color.argb(
                 Color.alpha(pixel),
                 Color.red(pixel) & 0xE0,
