@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/converter_main"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0EDE5"
-    tools:context=".ui.ConvertImageActivity">
+    android:background="@color/colorPrimary"
+    tools:context=".ui.TransferActivity">
 
     <!-- Info Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,10 +20,10 @@
 
         <!-- Tytuł widoku -->
         <TextView
-            android:id="@+id/convertViewTitleText"
+            android:id="@+id/transferViewTitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/convertViewTitleText"
+            android:text="@string/transferViewTitleText"
             android:textSize="18sp"
             android:gravity="center"
             android:fontFamily="sans-serif"
@@ -34,9 +33,10 @@
 
         <!-- Spacer -->
         <View
+            android:id="@+id/infoSpacer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/convertViewTitleText"
+            app:layout_constraintTop_toBottomOf="@id/transferViewTitleText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -53,7 +53,7 @@
         app:layout_constraintDimensionRatio="1:1">
 
         <ImageView
-            android:id="@+id/source_image"
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
@@ -61,226 +61,205 @@
             android:scaleType="fitCenter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Buttons Block -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/buttonsBlock"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#F0EDE5"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/picBlock"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Spacer -->
+        <!-- Spacer 2H -->
         <View
             android:id="@+id/spacer_top"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/optionsContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0666" />
+            app:layout_constraintHeight_percent="0.08" />
 
-        <!-- Options Container -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/optionsContainer"
+        <!-- Klawisze slotów 4H -->
+        <LinearLayout
+            android:id="@+id/slot_buttons_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/spacer_top"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/spacer_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/spacer_between_spinners_and_first_slider">
-
-            <!-- Algorithm Spinner -->
-            <Spinner
-                android:id="@+id/algorithm_spinner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintWidth_percent="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/palette_spinner"
-                app:layout_constraintEnd_toStartOf="@id/palette_spinner" />
-
-            <!-- Palette Spinner -->
-            <Spinner
-                android:id="@+id/palette_spinner"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintWidth_percent="0.3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/algorithm_spinner"
-                app:layout_constraintBottom_toBottomOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Spacer -->
-        <View
-            android:id="@+id/spacer_between_spinners_and_first_slider"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/optionsContainer"
-            app:layout_constraintBottom_toTopOf="@id/first_slider_container"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0666" />
-
-        <!-- First Slider Container -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/first_slider_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/spacer_between_spinners_and_first_slider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/spacer_between_sliders">
+            app:layout_constraintHeight_percent="0.16">
 
             <TextView
-                android:id="@+id/first_param_label"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/slotText"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+        <!-- Spacer 2H -->
+        <View
+            android:id="@+id/spacer_middle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/slot_buttons_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.08" />
+
+        <!-- Brightness Slider Container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/brightness_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/spacer_middle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.16">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_top"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/brightnessNameText"
                 android:textSize="14sp"
                 android:layout_marginStart="24dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_top" />
 
             <SeekBar
-                android:id="@+id/first_param_slider"
+                android:id="@+id/brightness_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/first_param_input"
-                app:layout_constraintTop_toBottomOf="@id/first_param_label"
+                app:layout_constraintEnd_toStartOf="@id/brightness_input"
+                app:layout_constraintTop_toBottomOf="@id/guideline_top"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintWidth_percent="0.7"
                 android:layout_gravity="center_vertical" />
 
             <EditText
-                android:id="@+id/first_param_input"
+                android:id="@+id/brightness_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:autofillHints="number"
                 android:inputType="number"
                 android:textSize="14sp"
-                android:hint="@string/firstParamHintText"
-                app:layout_constraintStart_toEndOf="@id/first_param_slider"
+                android:hint="@string/brightnessHintText"
+                app:layout_constraintStart_toEndOf="@id/brightness_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_top"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- Spacer -->
+        <!-- Spacer 1H -->
         <View
-            android:id="@+id/spacer_between_sliders"
+            android:id="@+id/spacer_middle_small"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/first_slider_container"
-            app:layout_constraintBottom_toTopOf="@id/second_slider_container"
+            app:layout_constraintTop_toBottomOf="@+id/brightness_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0333" />
+            app:layout_constraintHeight_percent="0.04" />
 
-        <!-- Second Slider Container -->
+        <!-- Time Slider Container -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/second_slider_container"
+            android:id="@+id/time_container"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/spacer_between_sliders"
+            app:layout_constraintTop_toBottomOf="@id/spacer_middle_small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/spacer_below_second_slider">
+            app:layout_constraintHeight_percent="0.16">
+
+            <!-- Guideline to limit height of the TextView -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_time_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.2" />
 
             <TextView
-                android:id="@+id/second_param_label"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/timeNameText"
                 android:textSize="14sp"
                 android:layout_marginStart="24dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/guideline_time_top" />
 
             <SeekBar
-                android:id="@+id/second_param_slider"
+                android:id="@+id/time_slider"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/second_param_input"
-                app:layout_constraintTop_toBottomOf="@id/second_param_label"
-                app:layout_constraintWidth_percent="0.7"
+                app:layout_constraintEnd_toStartOf="@id/time_input"
+                app:layout_constraintTop_toBottomOf="@id/guideline_time_top"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintWidth_percent="0.7"
                 android:layout_gravity="center_vertical" />
 
             <EditText
-                android:id="@+id/second_param_input"
+                android:id="@+id/time_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:autofillHints="number"
                 android:inputType="number"
                 android:textSize="14sp"
-                android:hint="@string/firstParamHintText"
-                app:layout_constraintStart_toEndOf="@id/second_param_slider"
+                android:hint="@string/displayTimeHintText"
+                app:layout_constraintStart_toEndOf="@id/time_slider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintWidth_percent="0.15"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/guideline_time_top"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Spacer -->
-        <View
-            android:id="@+id/spacer_below_second_slider"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/second_slider_container"
-            app:layout_constraintBottom_toTopOf="@id/button_preview"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0666" />
 
-        <!-- Button 'Show Preview' -->
-        <Button
-            android:id="@+id/button_preview"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/previewButtonText"
-            app:layout_constraintTop_toBottomOf="@id/spacer_below_second_slider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1333" />
-
-        <!-- Spacer -->
-        <View
-            android:id="@+id/spacer_above_transfer_button"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/button_preview"
-            app:layout_constraintBottom_toTopOf="@id/button_send"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0333" />
-
-        <!-- Button 'Transfer Result' -->
-        <Button
-            android:id="@+id/button_send"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="@string/transferButtonText"
-            app:layout_constraintTop_toBottomOf="@id/spacer_above_transfer_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.1333" />
-
-        <!-- Spacer -->
+        <!-- Spacer 2H -->
         <View
             android:id="@+id/spacer_bottom"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/button_send"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_container"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.0666" />
+            app:layout_constraintHeight_percent="0.08" />
+
+        <!-- Knefel "send" 4H -->
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/spacer_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.16"
+            android:text="@string/sendButtonText" />
+
+        <!-- Spacer 2H -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/send_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.08" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
