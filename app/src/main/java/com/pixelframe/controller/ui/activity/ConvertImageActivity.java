@@ -1,4 +1,4 @@
-package com.pixelframe.controller.ui;
+package com.pixelframe.controller.ui.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,7 +27,7 @@ import com.pixelframe.model.eventListeners.SendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.eventListeners.PaletteItemSelectedListener;
-import com.pixelframe.model.InputFilterMinMax;
+import com.pixelframe.model.filters.InputFilterMinMax;
 import com.pixelframe.model.palletes.AbstractPalette;
 import com.pixelframe.model.palletes.SourcePalette;
 

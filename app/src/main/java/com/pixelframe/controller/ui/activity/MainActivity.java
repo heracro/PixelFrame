@@ -1,4 +1,4 @@
-package com.pixelframe.controller.ui;
+package com.pixelframe.controller.ui.activity;
 
 import android.content.ContentResolver;
 import android.database.Cursor;

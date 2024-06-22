@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 
-import com.pixelframe.controller.ui.ConvertImageActivity;
-import com.pixelframe.model.MatrixLikeResultView;
+import com.pixelframe.controller.ui.activity.ConvertImageActivity;
+import com.pixelframe.model.processing.MatrixLikeResultView;
 import com.pixelframe.model.downsampling.AbstractDownsamplingAlgorithm;
 import com.pixelframe.model.palletes.AbstractPalette;
 

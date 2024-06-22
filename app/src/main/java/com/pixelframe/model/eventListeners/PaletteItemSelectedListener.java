@@ -3,7 +3,7 @@ package com.pixelframe.model.eventListeners;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.pixelframe.controller.ui.ConvertImageActivity;
+import com.pixelframe.controller.ui.activity.ConvertImageActivity;
 import com.pixelframe.model.configuration.Configuration;
 
 public class PaletteItemSelectedListener implements AdapterView.OnItemSelectedListener {

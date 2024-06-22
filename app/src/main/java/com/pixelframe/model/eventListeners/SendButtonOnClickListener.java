@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 
-import com.pixelframe.controller.ui.ConvertImageActivity;
-import com.pixelframe.controller.ui.TransferActivity;
+import com.pixelframe.controller.ui.activity.ConvertImageActivity;
+import com.pixelframe.controller.ui.activity.TransferActivity;
 
 /**
  * In this class method onClick should send prepared bitmap to previously connected PicoFrame device

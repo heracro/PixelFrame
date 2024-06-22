@@ -1,45 +1,46 @@
 package com.pixelframe.model.eventListeners;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
-
-import com.pixelframe.controller.ui.MainActivity;
-import com.pixelframe.controller.ui.TransferActivity;
-import com.pixelframe.model.configuration.Configuration;
-
-import android.support.media.ExifInterface;
-import android.widget.Toast;
-
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import java.io.ByteArrayOutputStream;
+import androidx.exifinterface.media.ExifInterface;
+import com.pixelframe.controller.ui.activity.TransferActivity;
+import com.pixelframe.model.configuration.Configuration;
+import com.polidea.rxandroidble2.RxBleClient;
+import com.polidea.rxandroidble2.RxBleDevice;
+import com.polidea.rxandroidble2.RxBleConnection;
+import com.polidea.rxandroidble2.scan.ScanFilter;
+import com.polidea.rxandroidble2.scan.ScanSettings;
+import com.polidea.rxandroidble2.scan.ScanResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class BTSendButtonOnClickListener implements View.OnClickListener {
     private final Context context;
     private final Bitmap image;
     private final int slot;
     private final float time;
-    private BluetoothAdapter bluetoothAdapter;
-    private BluetoothDevice raspberryPiDevice;
+    private final RxBleClient rxBleClient;
+    private Disposable scanSubscription;
     public static final int REQUEST_BLUETOOTH_PERMISSIONS = 1;
     public static final int REQUEST_ENABLE_BT = 2;
 
@@ -50,50 +51,15 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
         this.image = a.getImage();
         this.slot = a.getChosenSlot();
         this.time = a.getTime();
-
+        this.rxBleClient = RxBleClient.create(context);
     }
 
     @Override
     public void onClick(View v) {
         Log.i("BTSendButtonListener", "onClick()");
-        initializeBluetooth();
-    }
-
-    public void initializeBluetooth() {
-        Log.i("BTSendButtonListener", "initializeBluetooth()");
-        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = True");
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_PERMISSIONS);
-                return;
-            }
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            ((Activity) context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = False; Trying to find and connect to device");
-            findAndConnectToDevice();
+        if (checkAndRequestPermissions()) {
+            initializeBluetooth();
         }
-    }
-
-    private File attachMetadata() throws IOException {
-        Log.i("BTSendButtonListener", "attachMetadata()");
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        File cacheDir = context.getCacheDir();
-        File file = new File(cacheDir, slot + ".pfb");
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(byteArray);
-        fos.close();
-
-        ExifInterface exif = new ExifInterface(file.getAbsolutePath());
-        exif.setAttribute("time", String.valueOf(time));
-        exif.setAttribute("slot", String.valueOf(slot));
-        exif.saveAttributes();
-        return file;
     }
 
     private boolean checkAndRequestPermissions() {
@@ -112,94 +78,94 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
         }
     }
 
-    private void findAndConnectToDevice() {
-        Log.i("BTSendButtonListener", "findAndConnectToDevice()");
-        if (bluetoothAdapter == null) {
-            // Można dodać Toast lub log, aby poinformować użytkownika lub developerów o błędzie
-            Log.e("BTSendButtonListener", "BluetoothAdapter is null. Bluetooth may not be supported on this device.");
-            return;
-        }
-        if (!bluetoothAdapter.isEnabled()) {
-            // Bluetooth jest wyłączony, obsłuż to odpowiednio
-            Log.e("BTSendButtonListener", "Bluetooth is not enabled.");
-            return;
-        }
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            Log.e("BTSendButtonListener", "BLUETOOTH_CONNECT is not granted.");
-            ActivityCompat.requestPermissions((Activity) context,
-                    new String[]{Manifest.permission.BLUETOOTH_CONNECT},
-                    REQUEST_BLUETOOTH_PERMISSIONS);
-            return;
-        }
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        if (!pairedDevices.isEmpty()) {
-            for (BluetoothDevice device : pairedDevices) {
-                Log.i("BTSendButtonListener", "Paired BT Device found: " + device.getName());
-                if (device.getName().equals(Configuration.PICO_FRAME_NAME)) {
-                    raspberryPiDevice = device;
-                    break;
-                }
+    public void initializeBluetooth() {
+        Log.i("BTSendButtonListener", "initializeBluetooth()");
+        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
+            Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = True");
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
+            ((Activity) context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
-            Log.e("BTSendButtonListener", "No paired devices found");
-            Toast.makeText(context, "No paired devices found", Toast.LENGTH_SHORT).show();
-        }
-        if (raspberryPiDevice == null) {
-            Log.e("BTSendButtonListener", Configuration.PICO_FRAME_NAME + " device not found");
-            Toast.makeText(context, Configuration.PICO_FRAME_NAME + "e device not found", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.i("BTSendButtonListener", Configuration.PICO_FRAME_NAME + " found. Connecting...");
-            connectToDevice(raspberryPiDevice);
+            Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = False; Trying to find and connect to device");
+            startScan();
         }
     }
 
-    private void connectToDevice(BluetoothDevice device) {
+    private void startScan() {
+        Log.i("BTSendButtonListener", "startScan()");
+        ScanSettings scanSettings = new ScanSettings.Builder()
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build();
+        ScanFilter scanFilter = new ScanFilter.Builder()
+                .setServiceUuid(ParcelUuid.fromString("12345678-1234-5678-1234-56789abcdef0"))
+                .build();
+        scanSubscription = rxBleClient.scanBleDevices(scanSettings, scanFilter)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::onScanResult,
+                        throwable -> Log.e("BTSendButtonListener", "Scan failed", throwable)
+                );
+    }
+
+    private void onScanResult(ScanResult scanResult) {
+        RxBleDevice device = scanResult.getBleDevice();
+        if (device.getName() != null && device.getName().equals(Configuration.PICO_FRAME_NAME)) {
+            scanSubscription.dispose();
+            connectToDevice(device);
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void connectToDevice(RxBleDevice device) {
         Log.i("BTSendButtonListener", "connectToDevice()");
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context,
-                    new String[]{Manifest.permission.BLUETOOTH_CONNECT},
-                    REQUEST_BLUETOOTH_PERMISSIONS);
-            return;
-        }
-
-        try {
-            BluetoothSocket socket = device.createRfcommSocketToServiceRecord(UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E"));
-            socket.connect();
-            Log.i("BTSendButtonListener", "Connected to device");
-            Toast.makeText(context, "Connected to device", Toast.LENGTH_SHORT).show();
-            sendFile(socket);
-        } catch (IOException e) {
-            Log.d("BTSendButtonListener", e.getMessage());
-            Toast.makeText(context, "Failed to connect to device", Toast.LENGTH_SHORT).show();
-        }
+        device.establishConnection(false)
+                .flatMapSingle(RxBleConnection::discoverServices)
+                .flatMapSingle(services -> services.getCharacteristic(UUID.fromString("12345678-1234-5678-1234-56789abcdef1")))
+                .subscribe(
+                        characteristic -> sendFile(device, characteristic),
+                        throwable -> Log.e("BTSendButtonListener", "Connection failed", throwable)
+                );
     }
 
-    private void sendFile(BluetoothSocket socket) {
+    @SuppressLint("CheckResult")
+    private void sendFile(RxBleDevice device, BluetoothGattCharacteristic characteristic) {
         Log.i("BTSendButtonListener", "sendFile()");
         File file;
         try {
-             file = attachMetadata();
+            file = createBitmapFile(image, slot, time);
         } catch (IOException e) {
-            Toast.makeText(context, "Failed to attach metadata and create file. Clear cache and try again.", Toast.LENGTH_SHORT).show();
+            Log.e("BTSendButtonListener", "Failed to create bitmap file", e);
             return;
         }
         try {
             byte[] fileBytes = Files.readAllBytes(file.toPath());
-
-            OutputStream outputStream = socket.getOutputStream();
-            outputStream.write(fileBytes);
-            outputStream.flush();
-            outputStream.close();
-
-            socket.close();
-            Toast.makeText(context, "File sent successfully", Toast.LENGTH_SHORT).show();
+            device.establishConnection(false)
+                    .flatMapSingle(connection -> connection.writeCharacteristic(characteristic, fileBytes))
+                    .subscribe(
+                            bytes -> Log.i("BTSendButtonListener", "File sent successfully"),
+                            throwable -> Log.e("BTSendButtonListener", "File sending failed", throwable)
+                    );
         } catch (IOException e) {
             Log.d("BTSendButtonListener", Objects.requireNonNull(e.getMessage()));
         }
     }
 
-    void jumpToMainActivity() {
-        Log.i("BTSendButtonListener", "jumpToMainActivity()");
-        context.startActivity(new Intent(context, MainActivity.class));
+    private File createBitmapFile(Bitmap bitmap, int slot, float time) throws IOException {
+        File cacheDir = context.getCacheDir();
+        File file = new File(cacheDir, slot + ".pfb");
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
+            bitmap.copyPixelsToBuffer(buffer);
+            fos.write(buffer.array());
+        }
+        ExifInterface exif = new ExifInterface(file.getAbsolutePath());
+        exif.setAttribute("UserComment", "time=" + time + ",slot=" + slot);
+        exif.saveAttributes();
+        return file;
     }
 }

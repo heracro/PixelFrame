@@ -1,4 +1,4 @@
-package com.pixelframe.controller.ui;
+package com.pixelframe.controller.ui.activity;
 
 import static com.pixelframe.model.eventListeners.BTSendButtonOnClickListener.REQUEST_BLUETOOTH_PERMISSIONS;
 
@@ -20,15 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.model.MatrixLikeResultView;
+import com.pixelframe.model.processing.MatrixLikeResultView;
 import com.pixelframe.model.eventListeners.BTSendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.EditTextChangeListener;
 import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.eventListeners.SlotButtonPressListener;
 import com.pixelframe.model.configuration.Configuration;
-import com.pixelframe.model.InputFilterMinMax;
-import com.pixelframe.model.LinearBrightnessAdjuster;
+import com.pixelframe.model.filters.InputFilterMinMax;
+import com.pixelframe.model.processing.LinearBrightnessAdjuster;
 
 import java.util.ArrayList;
 import java.util.List;

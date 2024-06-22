@@ -5,8 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.pixelframe.controller.R;
-import com.pixelframe.controller.ui.TransferActivity;
+import com.pixelframe.controller.ui.activity.TransferActivity;
 
 public class SlotButtonPressListener implements View.OnClickListener {
     final TransferActivity activity;

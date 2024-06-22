@@ -1,4 +1,4 @@
-package com.pixelframe.model;
+package com.pixelframe.model.processing;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
