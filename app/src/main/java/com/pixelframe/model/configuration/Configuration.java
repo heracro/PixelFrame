@@ -23,10 +23,6 @@ public class Configuration {
     public static final String PICO_FRAME_NAME = "PicoFram";
     //Sets how thick pixels are in relation to grid line thickness. Recommended: 2. No grid: 0
     public static final int GRID_VIEW_PIXEL_RATIO = 4;
-    public static final String[] PALETTE_SPINNER_CHOICES = new String[] {
-        "8-bit",
-        "24-bit"
-    };
 
     public final static AlgorithmDescriptor[] ALGORITHMS = new AlgorithmDescriptor[] {
             new AlgorithmDescriptor(CentralPixel.class, "Central pixel color"),

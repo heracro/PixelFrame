@@ -86,23 +86,29 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = True");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                Log.d("BTSendButtonOnClickListener", "initializeBluetooth(): in handler when no permissions granted....");
                 return;
             }
             ((Activity) context).startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         } else {
             Log.d("BTSendButtonListener", "(bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) = False; Trying to find and connect to device");
+            Log.d("BTSendButtonListener", "Adapter: Name \""+bluetoothAdapter.getName() + "\", state \"" + bluetoothAdapter.getState()
+                    + "\", Scan mode \"" + bluetoothAdapter.getScanMode() + "\"");
             startScan();
         }
     }
 
     private void startScan() {
+
         Log.i("BTSendButtonListener", "startScan()");
         ScanSettings scanSettings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
+        Log.i("BTSendButtonListener", "scanSettings = " + scanSettings);
         ScanFilter scanFilter = new ScanFilter.Builder()
-                .setServiceUuid(ParcelUuid.fromString("12345678-1234-5678-1234-56789abcdef0"))
+                .setServiceUuid(ParcelUuid.fromString("AAAA1105-0000-1000-8000-00805f9b34fb"))
                 .build();
+        Log.i("BTSendButtonListener", "scanFilter = " + scanFilter);
         scanSubscription = rxBleClient.scanBleDevices(scanSettings, scanFilter)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
