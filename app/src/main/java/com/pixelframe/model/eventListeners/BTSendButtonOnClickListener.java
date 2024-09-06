@@ -167,5 +167,5 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             }
         }
     }
-    
+
 }
