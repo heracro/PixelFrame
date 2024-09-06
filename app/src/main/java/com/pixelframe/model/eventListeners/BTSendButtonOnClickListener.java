@@ -92,18 +92,17 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.e("BTSendButton","Permission not granted, skipping search for BT devices.");
-            discoveryLatch.countDown();
+            activity.runOnUiThread(
+                    () -> activity.showToastMessage("Permission not granted for Bluetooth.")
+            );
             return;
         }
         if (!picoDevices.isEmpty() && picoDevices.get(0).getName().equals("PicoFram")) return;
         picoDevices.clear();
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
-                != PackageManager.PERMISSION_GRANTED) {
-            Log.e("BTSendButton","Permission not granted, skipping search for BT devices.");
-            return;
-        }
         Log.e("BTSendButton","Permission granted, searching for BT devices.");
-        activity.showToastMessage("Searching for devices named 'PicoFram'...");
+        activity.runOnUiThread(
+                () -> activity.showToastMessage("Searching for devices named 'PicoFram'...")
+        );
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         activity.registerReceiver(bluetoothReceiver, filter);
         bluetoothAdapter.startDiscovery();
