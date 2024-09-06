@@ -3,6 +3,7 @@ package com.pixelframe.model.eventListeners;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,11 +23,16 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class BTSendButtonOnClickListener implements View.OnClickListener {
 
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final CountDownLatch discoveryLatch = new CountDownLatch(1);
     private final TransferActivity activity;
     private BluetoothSocket btSocket;
     //UUID for standard RFCOMM device with SPP service (serial port profile)
@@ -36,7 +42,12 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
 
     public BTSendButtonOnClickListener(TransferActivity activity) {
         this.activity = activity;
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        BluetoothManager bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
+        if (bluetoothManager != null) {
+            bluetoothAdapter = bluetoothManager.getAdapter();
+        } else {
+            throw new UnsupportedOperationException("Bluetooth is not supported on this device");
+        }
     }
 
     @Override
@@ -46,61 +57,79 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             activity.showToastMessage("Bluetooth is not enabled or not supported.");
             return;
         }
-        searchForPicoDevices();
-        if (picoDevices.size() != 1) {
-            activity.showToastMessage("Found " + picoDevices.size() + " devices named 'PicoFram'." +
-                    " Ensure exactly one is available.");
-            return;
-        }
-        if (!connectToDevice(picoDevices.get(0))) {
-            Log.e("BTSendButton", "Bluetooth connection failed");
-            activity.showToastMessage("Failed to connect to the PicoFram device.");
-            return;
-        }
-        try {
-            transferData();
-        } catch (IOException ignored) {
-            Log.e("BTSendButton","Transferring data to Pico failed");
-        } finally {
-            closeConnection();
-        }
+        executorService.execute(() -> {
+            searchForPicoDevices();
+            try {
+                if (!discoveryLatch.await(10, TimeUnit.SECONDS)) {
+                    Log.e("BTSendButton", "Bluetooth discovery timed out");
+                }
+            } catch (InterruptedException ignored) {}
+            activity.runOnUiThread(() -> {
+                if (picoDevices.size() != 1) {
+                    Log.d("BTSendButton", "Found " + picoDevices.size() + " devices named 'PicoFram'." +
+                            " Ensure exactly one is available.");
+                    activity.showToastMessage("Found " + picoDevices.size() + " devices named 'PicoFram'." +
+                            " Ensure exactly one is available.");
+                    return;
+                }
+                if (!connectToDevice(picoDevices.get(0))) {
+                    Log.e("BTSendButton", "Failed to connect to the PicoFram device.");
+                    activity.showToastMessage("Failed to connect to the PicoFram device.");
+                    return;
+                }
+                try {
+                    transferData();
+                } catch (IOException ignored) {
+                    Log.e("BTSendButton", "Transferring data to Pico failed");
+                } finally {
+                    closeConnection();
+                }
+            });
+        });
     }
 
     private void searchForPicoDevices() {
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
+                != PackageManager.PERMISSION_GRANTED) {
+            Log.e("BTSendButton","Permission not granted, skipping search for BT devices.");
+            discoveryLatch.countDown();
+            return;
+        }
+        if (!picoDevices.isEmpty() && picoDevices.get(0).getName().equals("PicoFram")) return;
         picoDevices.clear();
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
                 != PackageManager.PERMISSION_GRANTED) {
             Log.e("BTSendButton","Permission not granted, skipping search for BT devices.");
             return;
         }
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice device : pairedDevices) {
-            if ("PicoFram".equals(device.getName())) {
-                picoDevices.add(device);
-            }
-        }
-        if (picoDevices.isEmpty()) {
-            activity.showToastMessage("Searching for devices named 'PicoFram'...");
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            activity.registerReceiver(bluetoothReceiver, filter);
-            bluetoothAdapter.startDiscovery();
-        }
+        Log.e("BTSendButton","Permission granted, searching for BT devices.");
+        activity.showToastMessage("Searching for devices named 'PicoFram'...");
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        activity.registerReceiver(bluetoothReceiver, filter);
+        bluetoothAdapter.startDiscovery();
+        Log.e("BTSendButton", "searchForPicoDevices: Found " + picoDevices.size() + " devices");
     }
 
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.e("bluetoothReceiver", "onReceive called");
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
                         != PackageManager.PERMISSION_GRANTED || device == null) {
-                    Log.e("BTSendButton","Permission not granted or no device found," +
+                    Log.e("BTSendButton","onReceive: Permission not granted or no device found," +
                             " skipping search for BT devices.");
                     return;
                 }
+                Log.e("BTSendButton", "onReceive: device: " + device.getName());
                 if ("PicoFram".equals(device.getName())) {
+                    Log.e("BTSendButton","onReceive: PicoFram found, adding...");
                     picoDevices.add(device);
+                    bluetoothAdapter.cancelDiscovery();
+                    Log.e("BTSendButton","onReceive: PicoFram (" + picoDevices.size() +
+                            ") found, added: " + device);
                 }
             }
         }
@@ -126,24 +155,24 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             throw new IOException("Bluetooth socket is not connected");
         }
         OutputStream outputStream = btSocket.getOutputStream();
-        int slot = activity.getChosenSlot();
-        float time = activity.getTime();
-        Bitmap bitmap = activity.getImage();
-        sendInt(outputStream, slot);
-        sendFloat(outputStream, time);
-        sendBitmap(outputStream, bitmap);
+        sendInt(outputStream, activity.getChosenSlot());
+        sendFloat(outputStream, activity.getTime());
+        sendBitmap(outputStream, activity.getImage());
+        Log.d("BTSendButton", "Data transferred successfully");
     }
 
     private void sendInt(OutputStream outputStream, int value) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.putInt(value);
         outputStream.write(buffer.array());
+        Log.d("BTSendButton", "Sent int: " + value);
     }
 
     private void sendFloat(OutputStream outputStream, float value) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.putFloat(value);
         outputStream.write(buffer.array());
+        Log.d("BTSendButton", "Sent float: " + value);
     }
 
     private void sendBitmap(OutputStream outputStream, Bitmap bitmap) throws IOException {
@@ -156,12 +185,14 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             buffer.putInt(pixel);
         }
         outputStream.write(buffer.array());
+        Log.e("BTSendButton", "Sent bitmap with width: " + width + " and height: " + height);
     }
 
     private void closeConnection() {
         if (btSocket != null) {
             try {
                 btSocket.close();
+                Log.d("BTSendButton", "Bluetooth connection closed");
             } catch (IOException e) {
                 Log.e("BTSendButton","Failed to close connection to BT device");
             }

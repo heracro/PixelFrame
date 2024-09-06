@@ -18,15 +18,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.model.processing.MatrixLikeResultView;
+import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.eventListeners.BTSendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.EditTextChangeListener;
 import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
 import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.eventListeners.SlotButtonPressListener;
-import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.filters.InputFilterMinMax;
 import com.pixelframe.model.processing.LinearBrightnessAdjuster;
+import com.pixelframe.model.processing.MatrixLikeResultView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +166,7 @@ public class TransferActivity extends AppCompatActivity {
         return chosenSlot;
     }
 
-    public void setChosenSlot(int chosenSlot) {
+    public void setChosenSlot(final int chosenSlot) {
         this.chosenSlot = chosenSlot;
     }
 
@@ -174,11 +174,11 @@ public class TransferActivity extends AppCompatActivity {
         return timeSlider.getProgress();
     }
 
-    public void setAndRefreshPreview(Bitmap image) {
+    public void setAndRefreshPreview(final Bitmap image) {
         imageView.setImageBitmap(MatrixLikeResultView.convert(image));
     }
 
-    public void showToastMessage(String message) {
+    public void showToastMessage(final String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
