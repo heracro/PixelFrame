@@ -20,6 +20,7 @@ import com.pixelframe.controller.ui.activity.TransferActivity;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class BTSendButtonOnClickListener implements View.OnClickListener {
+public class AnotherSendButtonListener implements View.OnClickListener {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final CountDownLatch discoveryLatch = new CountDownLatch(1);
@@ -40,7 +41,7 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
     private final BluetoothAdapter bluetoothAdapter;
     private final List<BluetoothDevice> picoDevices = new ArrayList<>();
 
-    public BTSendButtonOnClickListener(TransferActivity activity) {
+    public AnotherSendButtonListener(TransferActivity activity) {
         Log.d("BTSendButton", "Creating Send Button Listener");
         this.activity = activity;
         BluetoothManager bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
@@ -145,10 +146,10 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
                 if ("PicoFram".equals(device.getName())) {
                     Log.d("BTSendButton","onReceive: PicoFram found, adding...");
                     picoDevices.add(device);
+                    bluetoothAdapter.cancelDiscovery();
                     try {
                         Thread.sleep(500); // because pico might be still in discovery?
                     } catch (InterruptedException ignored) {}
-                    bluetoothAdapter.cancelDiscovery();
                     Log.d("BTSendButton","onReceive: PicoFram (" + picoDevices.size() +
                             ") found, added: " + device);
                 }
@@ -163,11 +164,16 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
         }
         Log.d("BTSendButton", "connectToDevice(" + device.getName() + ")");
         try {
-            btSocket = device.createRfcommSocketToServiceRecord(SPP_UUID);
+            btSocket = (BluetoothSocket) device
+                    .getClass()
+                    .getMethod("createRfcommSocket", int.class)
+                    .invoke(device, 1);
+            bluetoothAdapter.cancelDiscovery();
             btSocket.connect();
-            Log.e("BTSendButton","Connecting to BT device SUCCESSFUL");
+            Log.d("BTSendButton","Connecting to BT device SUCCESSFUL");
             return true;
-        } catch (IOException e) {
+        } catch (IOException | InvocationTargetException
+                 | NoSuchMethodException | IllegalAccessException e) {
             Log.e("BTSendButton","Connecting to BT device failed");
             return false;
         }
