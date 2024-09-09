@@ -43,8 +43,7 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
     public BTSendButtonOnClickListener(TransferActivity activity) {
         Log.d("BTSendButton", "Creating Send Button Listener");
         this.activity = activity;
-        BluetoothManager bluetoothManager = (BluetoothManager) activity
-                .getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager bluetoothManager = (BluetoothManager) activity.getSystemService(Context.BLUETOOTH_SERVICE);
         if (bluetoothManager != null) {
             bluetoothAdapter = bluetoothManager.getAdapter();
         } else {
@@ -71,10 +70,10 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
             activity.runOnUiThread(() -> {
                 Log.d("BTSendButton", "Thread runner (inner) lambda entered");
                 if (picoDevices.size() != 1) {
-                    Log.e("BTSendButton", "Found " + picoDevices.size() + " devices " +
-                            "named 'PicoFram'. Ensure exactly one is available.");
-                    activity.showToastMessage("Found " + picoDevices.size() + " devices named" +
-                            " 'PicoFram'. Ensure exactly one is available.");
+                    Log.e("BTSendButton", "Found " + picoDevices.size() + " devices named 'PicoFram'." +
+                            " Ensure exactly one is available.");
+                    activity.showToastMessage("Found " + picoDevices.size() + " devices named 'PicoFram'." +
+                            " Ensure exactly one is available.");
                     return;
                 }
                 Log.d("BTSendButton", "Found 1 PicoFram. Excellent. Trying to connect...");
@@ -165,7 +164,6 @@ public class BTSendButtonOnClickListener implements View.OnClickListener {
         Log.d("BTSendButton", "connectToDevice(" + device.getName() + ")");
         try {
             btSocket = device.createRfcommSocketToServiceRecord(SPP_UUID);
-
             btSocket.connect();
             Log.e("BTSendButton","Connecting to BT device SUCCESSFUL");
             return true;
