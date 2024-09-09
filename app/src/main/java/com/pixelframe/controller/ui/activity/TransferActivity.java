@@ -19,9 +19,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
 import com.pixelframe.model.configuration.Configuration;
-import com.pixelframe.model.eventListeners.BTSendButtonOnClickListener;
 import com.pixelframe.model.eventListeners.EditTextChangeListener;
 import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.SendUsingWifiButtonListener;
 import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.eventListeners.SlotButtonPressListener;
 import com.pixelframe.model.filters.InputFilterMinMax;
@@ -129,7 +129,7 @@ public class TransferActivity extends AppCompatActivity {
 
     private void initSendButton() {
         Button sendButton = findViewById(R.id.send_button);
-        BTSendButtonOnClickListener sendButtonListener = new BTSendButtonOnClickListener(this);
+        SendUsingWifiButtonListener sendButtonListener = new SendUsingWifiButtonListener(this);
         sendButton.setOnClickListener(sendButtonListener);
     }
 
