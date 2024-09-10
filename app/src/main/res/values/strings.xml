@@ -14,5 +14,5 @@
     <string name="slotText">Slot:</string>
     <string name="brightnessNameText">Brightness</string>
     <string name="timeNameText">Time [s]</string>
-    <string name="sendButtonText">Send</string>
+    <string name="sendButtonText">Tune &amp; Send…</string>
 </resources>
