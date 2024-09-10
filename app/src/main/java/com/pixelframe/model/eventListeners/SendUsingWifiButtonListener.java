@@ -25,7 +25,7 @@ public class SendUsingWifiButtonListener implements View.OnClickListener {
 
     private static final int MAC_ADDRESS_COLUMN = 3;
     private static final int PING_TIMEOUT_MS = 100;
-    private static final String HARDCODED_PICO_IP = "192.168.100.100";
+    private static final String HARDCODED_PICO_IP = "192.168.100.152";
     private final TransferActivity activity;
     private final int picoPort = 14440;
     private static final String macPrefix = "28:CD:C1";
