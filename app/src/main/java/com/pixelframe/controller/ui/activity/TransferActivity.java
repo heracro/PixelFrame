@@ -31,6 +31,9 @@ import com.pixelframe.model.processing.MatrixLikeResultView;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class TransferActivity extends AppCompatActivity {
 
     private final List<Button> slotButtons = new ArrayList<>();
@@ -154,22 +157,6 @@ public class TransferActivity extends AppCompatActivity {
         }
     }
 
-    public List<Button> getSlotButtons() {
-        return slotButtons;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public int getChosenSlot() {
-        return chosenSlot;
-    }
-
-    public void setChosenSlot(final int chosenSlot) {
-        this.chosenSlot = chosenSlot;
-    }
-
     public float getTime() {
         return timeSlider.getProgress();
     }
@@ -178,8 +165,19 @@ public class TransferActivity extends AppCompatActivity {
         imageView.setImageBitmap(MatrixLikeResultView.convert(image));
     }
 
-    public void showToastMessage(final String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    public int getChosenSlot() {
+        return chosenSlot;
     }
 
+    public void setChosenSlot(int slot) {
+        this.chosenSlot = slot;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public List<Button> getSlotButtons() {
+        return slotButtons;
+    }
 }

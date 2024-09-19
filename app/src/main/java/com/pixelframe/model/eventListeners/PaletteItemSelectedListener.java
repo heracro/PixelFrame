@@ -15,7 +15,7 @@ public class PaletteItemSelectedListener implements AdapterView.OnItemSelectedLi
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        activity.setPaletteClass(Configuration.PALETTES[position].palette);
+        activity.setPaletteClass(Configuration.PALETTES[position].palette());
     }
 
     @Override

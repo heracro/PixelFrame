@@ -25,18 +25,25 @@ public class SendUsingWifiButtonListener implements View.OnClickListener {
 
     private static final int MAC_ADDRESS_COLUMN = 3;
     private static final int PING_TIMEOUT_MS = 100;
-    private static final String HARDCODED_PICO_IP = "192.168.100.152";
+    private static final String HARDCODED_PICO_IP = null;
     private final TransferActivity activity;
     private final int picoPort = 14440;
-    private static final String macPrefix = "28:CD:C1";
+    private static final List<String> raspberryMacPrefixes = List.of(
+            "28:CD", "B8:27", "D8:3A", "DC:A6:32", "E4:5F:01"
+    );
     private int chosenSlot;
     private float time;
     private int[] pixels;
     private String picoIpAddress;
     private final Socket socket = new Socket();
+    private boolean isScanning = false;
 
     public SendUsingWifiButtonListener(TransferActivity activity) {
         this.activity = activity;
+        if (!findPicoInArpTable()) {
+            Log.d("WiFiSender", "Pico not found in ARP, starting async scan...");
+            startAsyncScan();
+        }
     }
 
     @Override
@@ -44,13 +51,14 @@ public class SendUsingWifiButtonListener implements View.OnClickListener {
         collectBytesForTransfer();
         new Thread(() -> {
             if (!findPicoIp()) return;
+            Log.d("WiFiSender", "Pico found");
             try {
                 socket.connect(new InetSocketAddress(picoIpAddress, picoPort), 15000);
                 transferData();
                 socket.close();
             } catch (IOException e) {
                 activity.runOnUiThread(() -> Toast.makeText(
-                        activity, "Data sent successfully!", Toast.LENGTH_SHORT).show());
+                        activity, "Failed to send picture", Toast.LENGTH_SHORT).show());
                 Log.e("WiFiSender", "Failed to use socket: " + e.getMessage());
             }
             activity.runOnUiThread(() -> Toast.makeText(
@@ -82,6 +90,25 @@ public class SendUsingWifiButtonListener implements View.OnClickListener {
             activity.runOnUiThread(() -> Toast.makeText(activity, "Failed to send data: " +
                     e.getMessage(), Toast.LENGTH_LONG).show());
         }
+    }
+
+    private boolean findPicoInArpTable() {
+        try {
+            Process p = Runtime.getRuntime().exec("ip neigh");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\s+");
+                if (parts.length >= 4 && raspberryMacPrefixes.stream().anyMatch(parts[4]::startsWith)) {
+                    picoIpAddress = parts[0];  // Zapisz IP Pico
+                    Log.d("WiFiSender", "Found Pico in ARP table with IP: " + picoIpAddress);
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            Log.e("WiFiSender", "Error while checking ARP table: " + e.getMessage());
+        }
+        return false;
     }
 
     private List<String> getHostSubnets() {
@@ -142,25 +169,45 @@ public class SendUsingWifiButtonListener implements View.OnClickListener {
     }
 
     private boolean findPicoIp(){
-        if (HARDCODED_PICO_IP != null || !HARDCODED_PICO_IP.isEmpty()) {
+        if (HARDCODED_PICO_IP != null && !HARDCODED_PICO_IP.isEmpty()) {
             picoIpAddress = HARDCODED_PICO_IP;
             return true;
         }
-        List<String> potentialIPs = new ArrayList<>();
-        for (String subnet : getHostSubnets()) {
-            potentialIPs.addAll(getPingableIps(subnet));
+        if (findPicoInArpTable()) {
+            return true;
         }
-        for (String ip : potentialIPs) {
-            String macAddress = getMacAddress(ip);
-            if (macAddress != null && macAddress.startsWith(macPrefix)) {
-                picoIpAddress = ip;
-                Log.d("WiFiSender", "Found Pico using ip " + ip);
-                return true;
-            }
+        if (isScanning) {
+            activity.runOnUiThread(() -> Toast.makeText(activity, "Searching for Pico still " +
+                            "on...", Toast.LENGTH_SHORT).show());
+            return false;
         }
-        activity.runOnUiThread(() -> Toast.makeText(activity, "Failed to find " +
-                "Pico device", Toast.LENGTH_LONG).show());
+        Log.d("WiFiSender", "Starting new scan for Pico...");
+        startAsyncScan();
+        activity.runOnUiThread(() -> Toast.makeText(activity, "Searching for Pico started",
+                Toast.LENGTH_SHORT).show());
         return false;
+    }
+
+    private void startAsyncScan() {
+        isScanning = true;
+        new Thread(() -> {
+            List<String> potentialIPs = new ArrayList<>();
+            for (String subnet : getHostSubnets()) {
+                Log.d("WiFiSender", "Scanning subnet: " + subnet);
+                potentialIPs.addAll(getPingableIps(subnet));
+            }
+            for (String ip : potentialIPs) {
+                String macAddress = getMacAddress(ip);
+                Log.d("WiFiSender", "Checking IP " + ip + " if MAC matches RPi...");
+                if (macAddress != null
+                        && raspberryMacPrefixes.stream().anyMatch(macAddress::startsWith)) {
+                    picoIpAddress = ip;
+                    Log.d("WiFiSender", "Found Pico using IP: " + ip);
+                    break;
+                }
+            }
+            isScanning = false;
+        }).start();
     }
 
 }

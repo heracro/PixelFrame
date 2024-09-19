@@ -55,7 +55,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -74,6 +73,8 @@ dependencies {
     implementation(libs.rxandroidble)
     implementation(libs.rxjava)
     implementation(libs.rxandroid)
+    implementation(libs.lombok)
+    annotationProcessor(libs.lombok)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

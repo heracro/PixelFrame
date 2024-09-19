@@ -18,6 +18,7 @@ exifInterface = "1.3.7"
 rxandroidble = "1.11.1"
 rxjava = "2.2.21"
 rxandroid = "2.1.1"
+lombok = "1.18.34"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,7 @@ exifInterface = { module = "androidx.exifinterface:exifinterface", version.ref =
 rxandroidble = { group = "com.polidea.rxandroidble2", name = "rxandroidble", version.ref = "rxandroidble" }
 rxjava = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxjava" }
 rxandroid = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid" }
+lombok = { module = "org.projectlombok:lombok", name = "lombok", version.ref = "lombok"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

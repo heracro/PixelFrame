@@ -14,7 +14,6 @@ public class AlgorithmItemSelectedListener implements AdapterView.OnItemSelected
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        activity.setAlgorithmPosition(position);
         activity.setDownsamplerClass(Configuration.ALGORITHMS[position].algorithm);
         activity.updateParameterHints(position);
         activity.initSliders();

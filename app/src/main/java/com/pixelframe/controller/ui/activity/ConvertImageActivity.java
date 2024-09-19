@@ -31,17 +31,25 @@ import com.pixelframe.model.filters.InputFilterMinMax;
 import com.pixelframe.model.palletes.AbstractPalette;
 import com.pixelframe.model.palletes.SourcePalette;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ConvertImageActivity extends AppCompatActivity {
+    @Getter
     private int imageWidth;
+    @Getter
     private int imageHeight;
     private Class<? extends AbstractDownsamplingAlgorithm> downsampler;
     private Class<? extends AbstractPalette> palette;
     private ImageView resultView;
+    @Getter
     private Bitmap chosenFragment;
+    @Setter
+    @Getter
     private Bitmap convertedFragment;
+    @Setter
     private Bitmap simulatedFragmentLook;
     private Button sendButton;
-    private int algorithmPosition;
     private SeekBar sliderParam1;
     private EditText editParam1;
     private SeekBar sliderParam2;
@@ -57,18 +65,6 @@ public class ConvertImageActivity extends AppCompatActivity {
         palette = SourcePalette.class;
         initLayout();
         loadImage();
-    }
-
-    public int getImageWidth() {
-        return imageWidth;
-    }
-
-    public int getImageHeight() {
-        return imageHeight;
-    }
-
-    public Bitmap getChosenFragment() {
-        return chosenFragment;
     }
 
     public Class<? extends AbstractDownsamplingAlgorithm> getDownsamplerClass() {
@@ -93,18 +89,6 @@ public class ConvertImageActivity extends AppCompatActivity {
 
     public int getParam2Value() {
         return sliderParam2.getProgress();
-    }
-
-    public Bitmap getConvertedFragment() {
-        return convertedFragment;
-    }
-
-    public void setConvertedFragment(Bitmap fragment) {
-        convertedFragment = fragment;
-    }
-
-    public void setSimulatedFragmentLook(Bitmap fragment) {
-        simulatedFragmentLook = fragment;
     }
 
     public void refreshResultView() {
@@ -134,7 +118,7 @@ public class ConvertImageActivity extends AppCompatActivity {
         Spinner paletteSpinner = findViewById(R.id.palette_spinner);
         String[] paletteNames = new String[Configuration.PALETTES.length];
         for (int i = 0; i < Configuration.PALETTES.length; ++i) {
-            paletteNames[i] = Configuration.PALETTES[i].name;
+            paletteNames[i] = Configuration.PALETTES[i].name();
         }
         ArrayAdapter<String> paletteAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item,
@@ -257,10 +241,6 @@ public class ConvertImageActivity extends AppCompatActivity {
     private void enableEditText(EditText editText, boolean enable) {
         editText.setEnabled(enable);
         editText.setAlpha(enable ? 1f : 0.7f);
-    }
-
-    public void setAlgorithmPosition(int position) {
-        this.algorithmPosition = position;
     }
 
     public void updateParameterHints(int position) {
