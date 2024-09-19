@@ -3,8 +3,6 @@ package com.pixelframe.model.eventListeners;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
-import com.pixelframe.model.SliderParamUser;
-
 public class SliderChangeListener implements SeekBar.OnSeekBarChangeListener {
     private final EditText editText;
     private final SliderParamUser sliderParamUser;

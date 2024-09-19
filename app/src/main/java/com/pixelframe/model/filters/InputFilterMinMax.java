@@ -1,4 +1,4 @@
-package com.pixelframe.model;
+package com.pixelframe.model.filters;
 
 import android.content.Context;
 import android.text.InputFilter;

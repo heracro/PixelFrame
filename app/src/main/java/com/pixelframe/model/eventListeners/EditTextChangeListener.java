@@ -5,8 +5,6 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
-import com.pixelframe.model.SliderParamUser;
-
 
 public class EditTextChangeListener implements TextWatcher {
     private final EditText editText;

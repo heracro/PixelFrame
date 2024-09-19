@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PixelFrame">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.PixelFrame">
             <intent-filter>
@@ -28,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ConvertImageActivity"
+            android:name=".ui.activity.ConvertImageActivity"
             android:exported="true"
             android:theme="@style/Theme.PixelFrame">
             <intent-filter>
@@ -37,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.TransferActivity"
+            android:name=".ui.activity.TransferActivity"
             android:exported="true"
             android:theme="@style/Theme.PixelFrame">
             <intent-filter>

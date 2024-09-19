@@ -1,9 +1,11 @@
-package com.pixelframe.model;
+package com.pixelframe.model.processing;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.pixelframe.model.configuration.Configuration;
+import com.pixelframe.model.eventListeners.BitmapPreviewConsumer;
+import com.pixelframe.model.eventListeners.SliderParamUser;
 
 public class LinearBrightnessAdjuster implements SliderParamUser {
 

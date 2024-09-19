@@ -2,7 +2,7 @@ package com.pixelframe.model.eventListeners;
 
 import android.view.View;
 import android.widget.AdapterView;
-import com.pixelframe.controller.ui.ConvertImageActivity;
+import com.pixelframe.controller.ui.activity.ConvertImageActivity;
 import com.pixelframe.model.configuration.Configuration;
 
 public class AlgorithmItemSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -14,7 +14,6 @@ public class AlgorithmItemSelectedListener implements AdapterView.OnItemSelected
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        activity.setAlgorithmPosition(position);
         activity.setDownsamplerClass(Configuration.ALGORITHMS[position].algorithm);
         activity.updateParameterHints(position);
         activity.initSliders();

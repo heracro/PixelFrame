@@ -10,8 +10,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import com.github.chrisbanes.photoview.PhotoView;
-import com.pixelframe.controller.ui.ConvertImageActivity;
-import com.pixelframe.controller.ui.MainActivity;
+import com.pixelframe.controller.ui.activity.ConvertImageActivity;
+import com.pixelframe.controller.ui.activity.MainActivity;
 
 public class ConvertButtonOnClickListener implements View.OnClickListener {
     private final Context context;

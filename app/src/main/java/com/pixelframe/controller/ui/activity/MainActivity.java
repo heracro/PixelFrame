@@ -1,4 +1,4 @@
-package com.pixelframe.controller.ui;
+package com.pixelframe.controller.ui.activity;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -24,8 +24,11 @@ import com.pixelframe.model.configuration.Configuration;
 import com.squareup.picasso.Picasso;
 import java.io.InputStream;
 
+import lombok.Getter;
+
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> mGetContent;
+    @Getter
     private PhotoView photoView;
     private Button convertButton;
 
@@ -104,10 +107,6 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
         return true;
-    }
-
-    public PhotoView getPhotoView() {
-        return photoView;
     }
 
 }

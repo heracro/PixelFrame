@@ -1,6 +1,4 @@
-package com.pixelframe.controller.ui;
-
-import static com.pixelframe.model.eventListeners.BTSendButtonOnClickListener.REQUEST_BLUETOOTH_PERMISSIONS;
+package com.pixelframe.controller.ui.activity;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -20,18 +18,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.pixelframe.controller.R;
-import com.pixelframe.model.MatrixLikeResultView;
-import com.pixelframe.model.eventListeners.BTSendButtonOnClickListener;
+import com.pixelframe.model.configuration.Configuration;
 import com.pixelframe.model.eventListeners.EditTextChangeListener;
 import com.pixelframe.model.eventListeners.LayoutDimensionsListener;
+import com.pixelframe.model.eventListeners.SendUsingWifiButtonListener;
 import com.pixelframe.model.eventListeners.SliderChangeListener;
 import com.pixelframe.model.eventListeners.SlotButtonPressListener;
-import com.pixelframe.model.configuration.Configuration;
-import com.pixelframe.model.InputFilterMinMax;
-import com.pixelframe.model.LinearBrightnessAdjuster;
+import com.pixelframe.model.filters.InputFilterMinMax;
+import com.pixelframe.model.processing.LinearBrightnessAdjuster;
+import com.pixelframe.model.processing.MatrixLikeResultView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class TransferActivity extends AppCompatActivity {
 
@@ -131,7 +132,7 @@ public class TransferActivity extends AppCompatActivity {
 
     private void initSendButton() {
         Button sendButton = findViewById(R.id.send_button);
-        BTSendButtonOnClickListener sendButtonListener = new BTSendButtonOnClickListener(this);
+        SendUsingWifiButtonListener sendButtonListener = new SendUsingWifiButtonListener(this);
         sendButton.setOnClickListener(sendButtonListener);
     }
 
@@ -149,37 +150,34 @@ public class TransferActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_BLUETOOTH_PERMISSIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permissions granted, press Transfer button again", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Permissions are required for Bluetooth operations", Toast.LENGTH_SHORT).show();
-            }
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permissions granted, press Transfer button again", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Permissions are required for Bluetooth operations", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public List<Button> getSlotButtons() {
-        return slotButtons;
-    }
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public int getChosenSlot() {
-        return chosenSlot;
-    }
-
-    public void setChosenSlot(int chosenSlot) {
-        this.chosenSlot = chosenSlot;
     }
 
     public float getTime() {
         return timeSlider.getProgress();
     }
 
-    public void setAndRefreshPreview(Bitmap image) {
+    public void setAndRefreshPreview(final Bitmap image) {
         imageView.setImageBitmap(MatrixLikeResultView.convert(image));
     }
 
+    public int getChosenSlot() {
+        return chosenSlot;
+    }
+
+    public void setChosenSlot(int slot) {
+        this.chosenSlot = slot;
+    }
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public List<Button> getSlotButtons() {
+        return slotButtons;
+    }
 }
